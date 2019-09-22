@@ -78,7 +78,12 @@ evaluate_watershed_shell <- function(input_file, number_of_dimensions, model_nam
 	# ie. Compute MAP estimates of the coefficients defined by P(outlier_status| FR)
 	phi_init <- map_phi_initialization(discrete_outliers_train, gam_train_posteriors, number_of_dimensions, pseudoc)
 
+	#######################################
+	### Fit Watershed Model
+	#######################################
+	watershed_model <- train_watershed_model(feat_train, discrete_outliers_train, phi_init, gam_data$gam_parameters$theta_pair, gam_data$gam_parameters$theta_singleton, gam_data$gam_parameters$theta, pseudoc, gam_data$lambda, number_of_dimensions, model_name, vi_step_size, vi_threshold)
 
+	saveRDS(watershed_model, paste0(output_stem, "_model.rds"))
 
  	return(4)
 }
@@ -131,7 +136,7 @@ lambda_costs <- c(.1, .01, 1e-3)
 nfolds <- 5
 # Parameters used for Variational Optimization (only applies if arguments$model_name=="Watershed_approximate")
 vi_step_size <- .8
-vi_threshold <- 1e8
+vi_threshold <- 1e-8
 
 # Set seed for reproducability (feel free to change!)
 set.seed(1)
