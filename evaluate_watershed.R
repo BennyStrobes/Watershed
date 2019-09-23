@@ -1,6 +1,54 @@
 library(optparse)
+library(PRROC)
 source("watershed.R")
 
+# Helper function to remove NAs from vector
+remove_na <- function(x) {
+	return(x[!is.na(x)])
+}
+
+#######################################
+# Extract precision recall curves for test set (in each dimension seperately) using:
+#### 1. Watershed predictions
+#### 2. GAM predictions
+#######################################
+compute_auc_across_dimensions <- function(number_of_dimensions, watershed_posteriors, gam_posteriors, real_valued_outliers_test1, binary_outliers_test2) {
+	# Initialize objects to store auc information
+	auc_object_across_dimensions <- list()
+	pos_list <- c()
+	neg_list <- c()
+  	# Loop through dimensions
+  	for (dimension in 1:number_of_dimensions) {
+  		# Pseudo gold standard
+  		test_outlier_status <- binary_outliers_test2[,dimension]
+
+		# Watershed evaluation curves
+  		watershed_roc_obj <- roc.curve(scores.class0 = remove_na(watershed_posteriors[,dimension][test_outlier_status==1 & !is.na(real_valued_outliers_test1[,dimension])]), scores.class1 = remove_na(watershed_posteriors[,dimension][test_outlier_status==0 & !is.na(real_valued_outliers_test1[,dimension])]), curve = T)
+  		watershed_pr_obj <- pr.curve(scores.class0 = remove_na(watershed_posteriors[,dimension][test_outlier_status==1 & !is.na(real_valued_outliers_test1[,dimension])]), scores.class1 = remove_na(watershed_posteriors[,dimension][test_outlier_status==0 & !is.na(real_valued_outliers_test1[,dimension])]), curve = T)
+  	
+  		# GAM evaluation curves
+  		gam_roc_obj <- roc.curve(scores.class0 = remove_na(gam_posteriors[,dimension][test_outlier_status==1 & !is.na(real_valued_outliers_test1[,dimension])]), scores.class1 = remove_na(gam_posteriors[,dimension][test_outlier_status==0 & !is.na(real_valued_outliers_test1[,dimension])]), curve = T)
+   		gam_pr_obj <- pr.curve(scores.class0 = remove_na(gam_posteriors[,dimension][test_outlier_status==1 & !is.na(real_valued_outliers_test1[,dimension])]), scores.class1 = remove_na(gam_posteriors[,dimension][test_outlier_status==0 & !is.na(real_valued_outliers_test1[,dimension])]), curve = T)
+
+		evaROC <-	
+		 list(watershed_sens=watershed_roc_obj$curve[,2],
+              watershed_spec=1-watershed_roc_obj$curve[,1],
+         	  watershed_auc=watershed_roc_obj$auc,
+         	  watershed_pr_auc=watershed_pr_obj$auc.integral,
+         	  watershed_recall=watershed_pr_obj$curve[,1],
+         	  watershed_precision=watershed_pr_obj$curve[,2],
+         	  GAM_sens=gam_roc_obj$curve[,2],
+              GAM_spec=1-gam_roc_obj$curve[,1],
+              GAM_auc=gam_roc_obj$auc,
+         	  GAM_pr_auc=gam_pr_obj$auc.integral,
+         	  GAM_recall=gam_pr_obj$curve[,1],
+         	  GAM_precision=gam_pr_obj$curve[,2])
+
+		auc_object_across_dimensions[[dimension]] <- list(evaROC=evaROC)
+	}
+
+	return(auc_object_across_dimensions)
+}
 
 
 
@@ -62,7 +110,7 @@ evaluate_watershed_shell <- function(input_file, number_of_dimensions, model_nam
 	gam_data <- logistic_regression_genomic_annotation_model_cv(feat_train, binary_outliers_train, nfolds, lambda_costs, lambda_init)
 	# Report optimal lambda learned from cross-validation data (if applicable)
 	if (is.na(lambda_init)) {
-		print(paste0(nfolds,"-fold cross validation on GAM yielded optimal lambda of ", gam_data$lambda))
+		cat(paste0(nfolds,"-fold cross validation on GAM yielded optimal lambda of ", gam_data$lambda, "\n"))
 	}
 	# Compute GAM Predictions on test data in CPP file ("independent_crf_exact_updates.cpp")
 	gam_posterior_test_obj <- update_independent_marginal_probabilities_exact_inference_cpp(feat_test, binary_outliers_test1, gam_data$gam_parameters$theta_singleton, gam_data$gam_parameters$theta_pair, gam_data$gam_parameters$theta, matrix(0,2,2), matrix(0,2,2), number_of_dimensions, choose(number_of_dimensions, 2), FALSE)
@@ -83,9 +131,21 @@ evaluate_watershed_shell <- function(input_file, number_of_dimensions, model_nam
 	#######################################
 	watershed_model <- train_watershed_model(feat_train, discrete_outliers_train, phi_init, gam_data$gam_parameters$theta_pair, gam_data$gam_parameters$theta_singleton, gam_data$gam_parameters$theta, pseudoc, gam_data$lambda, number_of_dimensions, model_name, vi_step_size, vi_threshold)
 
-	saveRDS(watershed_model, paste0(output_stem, "_model.rds"))
+	#######################################
+	## Compute Watershed Posterior probabilities for held-out test data (ie the N2 pairs)
+	#######################################
+	posterior_info_test <- update_marginal_posterior_probabilities(feat_test, discrete_outliers_test1, watershed_model)
+	posterior_prob_test <- posterior_info_test$probability  # Marginal posteriors
+	posterior_pairwise_prob_test <- posterior_info_test$probability_pairwise  # Pairwise posteriors
 
- 	return(4)
+	#######################################
+	# Extract precision recall curves for test set (in each dimension seperately) using:
+	#### 1. Watershed predictions
+	#### 2. GAM predictions
+	#######################################
+	auc_object_across_dimensions <- compute_auc_across_dimensions(number_of_dimensions, posterior_prob_test, gam_test_posteriors, real_valued_outliers_test1, binary_outliers_test2)
+
+	return(list(auc=auc_object_across_dimensions, model_params=watershed_model, gam_model_params=gam_data))
 }
 
 
@@ -123,7 +183,7 @@ binary_pvalue_threshold <- arguments$binary_pvalue_threshold
 
 # Change model to RIVER if there is only 1 dimension.
 if (number_of_dimensions==1 & model_name != "RIVER") {
-	print("Only RIVER can be run on data with 1 dimension.\n Changing model to RIVER.")
+	cat("Only RIVER can be run on data with 1 dimension.\n Changing model to RIVER.\n")
 	model_name <- "RIVER"
 }
 
@@ -146,3 +206,20 @@ set.seed(1)
 ## Train model on non-N2 pairs and evaluate model on N2-pairs
 #######################################
 evaluation_object <- evaluate_watershed_shell(input_file, number_of_dimensions, model_name, pseudoc, lambda_init, output_stem, n2_pair_pvalue_fraction, binary_pvalue_threshold, lambda_costs, nfolds, vi_step_size, vi_threshold)
+
+
+#######################################
+## Save evaluation object as .rds file
+#######################################
+saveRDS(evaluation_object, paste0(output_stem, "_evaluation_object.rds"))
+
+
+#######################################
+## Print area under precision-recall curves in each dimension
+#######################################
+for (dimension in 1:number_of_dimensions) {
+	model_pr_auc <- evaluation_object$auc[[dimension]]$evaROC$watershed_pr_auc
+	gam_pr_auc <- evaluation_object$auc[[dimension]]$evaROC$GAM_pr_auc
+	cat(paste0(model_name, " area under precision-recall curve in dimension ", dimension,": ", model_pr_auc, "\n"))
+	cat(paste0("GAM area under precision-recall curve in dimension ", dimension,": ", gam_pr_auc, "\n"))
+}

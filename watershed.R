@@ -386,7 +386,7 @@ compute_exact_crf_gradient_for_lbfgs <- function(x, feat, discrete_outliers, pos
 	} else if (model_name == "RIVER"){
 		grad_pair <- numeric(nrow(posterior_pairwise))
 	}
-	
+
 	# Merge all gradients into one vector (to be returned to the LBFGS optimizer)
 	grad <- c(grad_singleton, grad_theta, grad_pair)
 	return(-grad)
@@ -515,10 +515,45 @@ map_phi <- function(discrete_outliers, model_params) {
 	return(model_params)
 }
 
+# Check convergence of Watershed
+check_convergence <- function(model_params, phi_old, theta_old, theta_singleton_old, theta_pair_old, iter, max_iter) {
+	# Initialize to not converged
+	converged = FALSE
+
+	# Number of parameters defining each parameter variable
+	num_theta_param = (dim(model_params$theta)[1]*dim(model_params$theta)[2])
+	num_theta_singleton_param = (dim(as.matrix(model_params$theta_singleton))[1]*dim(as.matrix(model_params$theta_singleton))[2])
+	num_theta_pair_param = (dim(model_params$theta_pair)[1]*dim(model_params$theta_pair)[2])
+	num_phi_param = dim(model_params$phi$inlier_component)[1]*dim(model_params$phi$inlier_component)[2]
+	total_params_watershed = num_theta_param + num_theta_singleton_param + num_theta_pair_param + num_phi_param + num_phi_param
+	total_params_river = num_theta_param + num_theta_singleton_param + num_phi_param + num_phi_param
+
+	# Calculate average norm change in parameter estimates (seperately for RIVER and Watershed)
+	# Done seperately because RIVER doesn't actually have theta_pair parameters
+	if (model_params$model_name == "RIVER") {
+		total_norm = (norm(model_params$theta - theta_old) + norm(as.matrix(model_params$theta_singleton) - as.matrix(theta_singleton_old)) + norm(model_params$phi$inlier_component - phi_old$inlier_component) + norm(model_params$phi$outlier_component - phi_old$outlier_component))/total_params_river
+	} else {
+		total_norm = (norm(model_params$theta - theta_old) + norm(as.matrix(model_params$theta_singleton) - as.matrix(theta_singleton_old)) + norm(model_params$theta_pair - theta_pair_old) + norm(model_params$phi$inlier_component - phi_old$inlier_component) + norm(model_params$phi$outlier_component - phi_old$outlier_component))/total_params_watershed
+	}
+
+	cat(paste0("Average total norm: ", total_norm, "\n"))
+
+	# Check for convergence
+	if (total_norm < 1e-4) {
+		converged = TRUE
+		cat("Watershed converged\n")
+	} else if (iter == max_iter) {
+		converged = TRUE
+		cat("Watershed converged due to reaching max iteration\n")
+	}
+
+	return(converged)
+}
+
+### Fit Watershed Model
 train_watershed_model <- function(feat, discrete_outliers, phi_init, theta_pair_init, theta_singleton_init, theta_init, pseudoc, lambda, number_of_dimensions, model_name, vi_step_size, vi_thresh) {
 	# Put model parameters in an easy to handle data structure
 	model_params <- initialize_model_params(dim(feat)[1], dim(feat)[2], number_of_dimensions, phi_init, theta_pair_init, theta_singleton_init, theta_init, pseudoc, lambda, model_name, vi_step_size, vi_thresh)
-
 
 	##############################################
 	# Start Iterative Expectation-Maximation here
@@ -528,8 +563,8 @@ train_watershed_model <- function(feat, discrete_outliers, phi_init, theta_pair_
 	max_iter = 500
 	# Iterate between E and M until convergence
 	while (converged==FALSE) {
-		print('########################')
-		print(paste0("ITERATION ", iter))
+		cat('########################\n')
+		cat(paste0("ITERATION ", iter, "\n"))
 		##########################
 		# Keep track of model parameters from the previous iteration
 		##########################
@@ -546,7 +581,6 @@ train_watershed_model <- function(feat, discrete_outliers, phi_init, theta_pair_
 		model_params$posterior = expected_posteriors$probability
 		model_params$posterior_pairwise = expected_posteriors$probability_pairwise
 
-
 		##########################
 		# M-Step: Update Theta and Phi given most recent expectations from E-step 
 		##########################
@@ -555,46 +589,13 @@ train_watershed_model <- function(feat, discrete_outliers, phi_init, theta_pair_
 		# Compute MAP estimates of phi (ie the coefficients defined by P(outlier_status| FR))
 		model_params <- map_phi(discrete_outliers, model_params)
 
-
-    	# Number of parameters per parameter variable
-   		num_theta_param = (dim(model_params$theta)[1]*dim(model_params$theta)[2])
-    	num_theta_singleton_param = (dim(as.matrix(model_params$theta_singleton))[1]*dim(as.matrix(model_params$theta_singleton))[2])
-    	num_theta_pair_param = (dim(model_params$theta_pair)[1]*dim(model_params$theta_pair)[2])
-    	num_phi_param = dim(model_params$phi$inlier_component)[1]*dim(model_params$phi$inlier_component)[2]
-    	total_params = num_theta_param + num_theta_singleton_param + num_theta_pair_param + num_phi_param + num_phi_param
-      total_params_ind = num_theta_param + num_theta_singleton_param + num_phi_param + num_phi_param
-    	# Extract norms of change in parameter estimates from last iteration to this iteration
-    	theta_norm = norm(model_params$theta - theta_old)/num_theta_param
-    	theta_singleton_norm = norm(as.matrix(model_params$theta_singleton) - as.matrix(theta_singleton_old))/num_theta_singleton_param
-    	theta_pair_norm = norm(model_params$theta_pair - theta_pair_old)/num_theta_pair_param
-    	phi_inlier_norm = norm(model_params$phi$inlier_component - phi_old$inlier_component)/num_phi_param
-		phi_outlier_norm = norm(model_params$phi$outlier_component - phi_old$outlier_component)/num_phi_param
-    if (model_params$model_name == "RIVER") {
-      total_params = num_theta_param + num_theta_singleton_param + num_theta_pair_param + num_phi_param + num_phi_param
-		  total_norm = (norm(model_params$theta - theta_old) + norm(as.matrix(model_params$theta_singleton) - as.matrix(theta_singleton_old)) + norm(model_params$theta_pair - theta_pair_old) + norm(model_params$phi$inlier_component - phi_old$inlier_component) + norm(model_params$phi$outlier_component - phi_old$outlier_component))/total_params
-		} else {
-      total_params = num_theta_param + num_theta_singleton_param + num_phi_param + num_phi_param
-      total_norm = (norm(model_params$theta - theta_old) + norm(as.matrix(model_params$theta_singleton) - as.matrix(theta_singleton_old)) + norm(model_params$phi$inlier_component - phi_old$inlier_component) + norm(model_params$phi$outlier_component - phi_old$outlier_component))/total_params
-    }
-    # Print norms
-    	print(paste0("Theta norm (", num_theta_param, " parameters): ", theta_norm))
-    	print(paste0("Theta singleton norm (", num_theta_singleton_param, " parameters): ", theta_singleton_norm))
-    	print(paste0("Theta pair norm (", num_theta_pair_param, " parameters): ", theta_pair_norm))
-    	print(paste0("Phi inlier norm (", num_phi_param, " parameters): ", phi_inlier_norm))
-    	print(paste0("Phi outlier norm (", num_phi_param, " parameters): ", phi_outlier_norm))
-    	print(paste0("Total norm (", total_params, " parameters): ", total_norm))
-      iter = iter+1
-      if (total_norm < 1e-4) {
-        converged=TRUE
-        print("SHOULD CONVERGE")
-      }
-      if (iter == max_iter) {
-        converged=TRUE
-        print("SHOULD CONVERGE DUE TO MAX ITER")
-      }
-
-  }
-	return(model_params)
+		##########################
+		# Check for convergence
+		##########################
+		converged = check_convergence(model_params, phi_old, theta_old, theta_singleton_old, theta_pair_old, iter, max_iter)
+		iter = iter + 1
+	}
+  	return(model_params)
 }
 
 
