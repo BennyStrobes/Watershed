@@ -45,6 +45,7 @@ There are several other command line arguments that can be specified. A descript
 
 Running evaluate_watershed.R will save an R object to $output_prefix'evaluation_object.rds'.
 This object can be accesed in R with the following command:
+
 evaluation_object <- readRDS(evaluation_object_file_name)
 
 * evaluation_object$model_params contains all of the optimized Watershed parameters.
