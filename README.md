@@ -39,7 +39,7 @@ where:
 "Watershed_exact" is Watershed where parameters are optimized via exact inference (tractable and recommended when E is small. A general rule of thumb is if E is less than equal to 4, exact inference should be used). 
 "Watershed_approximate" is Watershed where parameters are optimized using approximate inference. This approach is tractable when E is large. For example, we used this to model the related outlier signals from 49 tissues (see bioRxiv preprint).
 
-There are several other command line arguments that can be specified. A description can be found in "evaluate_watershed.R"
+There are several other command line arguments (including model hyperparameter settings) that can be specified. A description can be found in "evaluate_watershed.R"
 
 ## evaluate_watershed.R deliverables
 

@@ -163,10 +163,10 @@ arguments <- parse_args(OptionParser(usage = "%prog [options]", description="Wat
 		make_option(c("-d","--number_dimensions"), default=1, help="The number of outlier variables."),
 		make_option(c("-m","--model_name"), default="Watershed_exact", help="Name of model. Options are Watershed_exact, Watershed_approximate, and RIVER"),
 		make_option(c("-p","--dirichlet_prior_parameter"), default=10, help="Parameter defining Dirichlet distribution the acts as a prior a Phi (the model parameters defining E|Z"),
-		make_option(c("-l","--l2_prior_parameter"), default=.001, help="Parameter defining L2 (gaussian) distribution the acts as a prior on the parameters of the conditional random Field (the model parameters defining Z|G"),
+		make_option(c("-l","--l2_prior_parameter"), default=.01, help="Parameter defining L2 (gaussian) distribution the acts as a prior on the parameters of the conditional random Field (the model parameters defining Z|G"),
 		make_option(c("-o","--output_prefix"), default="watershed", help="Prefix of file name to save results to"),
-		make_option(c("-n","--n2_pair_pvalue_fraction"), default=.01, help="Fraction of outliers (based on rank) that are considered an outlier for N2 pair analysis (this one done so each outlier type/signal has approximately the same distribution of positive outlier examples)"),
-		make_option(c("-b","--binary_pvalue_threshold"), default=.01, help="Absolute p-value threshold used to create binary outliers used for Genomic Annotation Model"))
+		make_option(c("-n","--n2_pair_pvalue_fraction"), default=.1, help="Fraction of outliers (based on rank) that are considered an outlier for N2 pair analysis (this one done so each outlier type/signal has approximately the same distribution of positive outlier examples)"),
+		make_option(c("-b","--binary_pvalue_threshold"), default=.1, help="Absolute p-value threshold used to create binary outliers used for Genomic Annotation Model"))
 ))
 # process command line args
 input_file <- arguments$input
