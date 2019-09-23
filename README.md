@@ -48,6 +48,8 @@ This object can be accesed in R with the following command:
 
 evaluation_object <- readRDS(evaluation_object_file_name)
 
+Once loaded, the object can be accessed via the following:
+
 * evaluation_object$model_params contains all of the optimized Watershed parameters.
 * evaluation_object$gam_model_params contains all optimized GAM parameters
 * evaluation_object$auc contains information on evaluation (precion-recall stats, etc)
@@ -65,7 +67,12 @@ TO DO
 ## predict_watershed.R deliverables
 TO DO
 
-
+## Dependencies and Testing environment
+* R 3.5.1
+* R package Rcpp (1.0.2)
+* R package lbfgs (1.2.1)
+* R package PRROC (1.3.1)
+* R package optparse (1.6.4)
 
 
 ## Authors
