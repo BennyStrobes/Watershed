@@ -119,7 +119,7 @@ evaluate_watershed_shell <- function(input_file, number_of_dimensions, model_nam
 	#######################################
 	### Initialize phi using GAM
 	#######################################
-	# Compute GAM Predictions on test data in CPP file ("independent_crf_exact_updates.cpp")
+	# Compute GAM Predictions on training data in CPP file ("independent_crf_exact_updates.cpp")
 	gam_posterior_train_obj <- update_independent_marginal_probabilities_exact_inference_cpp(feat_train, binary_outliers_test1, gam_data$gam_parameters$theta_singleton, gam_data$gam_parameters$theta_pair, gam_data$gam_parameters$theta, matrix(0,2,2), matrix(0,2,2), number_of_dimensions, choose(number_of_dimensions, 2), FALSE)
 	gam_train_posteriors <- gam_posterior_train_obj$probability
 	# Initialize Phi using GAM posteriors
@@ -163,7 +163,7 @@ arguments <- parse_args(OptionParser(usage = "%prog [options]", description="Wat
 		make_option(c("-d","--number_dimensions"), default=1, help="The number of outlier variables."),
 		make_option(c("-m","--model_name"), default="Watershed_exact", help="Name of model. Options are Watershed_exact, Watershed_approximate, and RIVER"),
 		make_option(c("-p","--dirichlet_prior_parameter"), default=10, help="Parameter defining Dirichlet distribution the acts as a prior a Phi (the model parameters defining E|Z"),
-		make_option(c("-l","--l2_prior_parameter"), default=.001, help="Parameter defining L2 (gaussian) distribution the acts as a prior on the parameters of the conditional random Field (the model parameters defining Z|G"),
+		make_option(c("-l","--l2_prior_parameter"), default=.01, help="Parameter defining L2 (gaussian) distribution the acts as a prior on the parameters of the conditional random Field (the model parameters defining Z|G"),
 		make_option(c("-o","--output_prefix"), default="watershed", help="Prefix of file name to save results to"),
 		make_option(c("-n","--n2_pair_pvalue_fraction"), default=.1, help="Fraction of outliers (based on rank) that are considered an outlier for N2 pair analysis (this one done so each outlier type/signal has approximately the same distribution of positive outlier examples)"),
 		make_option(c("-b","--binary_pvalue_threshold"), default=.1, help="Absolute p-value threshold used to create binary outliers used for Genomic Annotation Model"))

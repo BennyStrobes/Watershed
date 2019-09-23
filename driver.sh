@@ -1,59 +1,57 @@
 
 
 
+#######################
+# Run 'evaluate_watershed.R'
+#######################
 
+# Run using Watershed approximate inference
+model="Watershed_approximate"  # Can take on "Watershed_exact", "Watershed_approximate", "RIVER"
+number_of_dimensions="3" # Can take on any real number greater than or equal to one
+input_file="example_data/watershed_example_data.txt" # Input file
+output_prefix="model_"$model"_number_of_dimensions_"$number_of_dimensions
+Rscript evaluate_watershed.R --input $input_file --number_dimensions $number_of_dimensions --output_prefix $output_prefix --model_name $model
 
+# Run using Watershed exact inference
+model="Watershed_exact"  # Can take on "Watershed_exact", "Watershed_approximate", "RIVER"
+number_of_dimensions="3" # Can take on any real number greater than or equal to one
+input_file="example_data/watershed_example_data.txt" # Input file
+output_prefix="model_"$model"_number_of_dimensions_"$number_of_dimensions
+Rscript evaluate_watershed.R --input $input_file --number_dimensions $number_of_dimensions --output_prefix $output_prefix --model_name $model
 
-
+# Run using RIVER
 model="RIVER"  # Can take on "Watershed_exact", "Watershed_approximate", "RIVER"
 number_of_dimensions="3" # Can take on any real number greater than or equal to one
 input_file="example_data/watershed_example_data.txt" # Input file
-pseudocount="10"
-lambda="0.01" # Can take on a number or 'NA' to do a grid search
-
 output_prefix="model_"$model"_number_of_dimensions_"$number_of_dimensions
 Rscript evaluate_watershed.R --input $input_file --number_dimensions $number_of_dimensions --output_prefix $output_prefix --model_name $model
 
+
+
+
+#######################
+# Run 'predict_watershed.R'
+# Note for convenience, the training file is the same as the prediction file. This does not necessarily have to be the case
+#######################
+
+# Run using Watershed approximate inference
 model="Watershed_approximate"  # Can take on "Watershed_exact", "Watershed_approximate", "RIVER"
+number_of_dimensions="3" # Can take on any real number greater than or equal to one
+input_file="example_data/watershed_example_data.txt" # Input file
 output_prefix="model_"$model"_number_of_dimensions_"$number_of_dimensions
-Rscript evaluate_watershed.R --input $input_file --number_dimensions $number_of_dimensions --output_prefix $output_prefix --model_name $model
+Rscript predict_watershed.R --training_input $input_file --prediction_input $input_file --number_dimensions $number_of_dimensions --output_prefix $output_prefix --model_name $model
 
+# Run using Watershed exact inference
 model="Watershed_exact"  # Can take on "Watershed_exact", "Watershed_approximate", "RIVER"
+number_of_dimensions="3" # Can take on any real number greater than or equal to one
+input_file="example_data/watershed_example_data.txt" # Input file
 output_prefix="model_"$model"_number_of_dimensions_"$number_of_dimensions
-Rscript evaluate_watershed.R --input $input_file --number_dimensions $number_of_dimensions --output_prefix $output_prefix --model_name $model
+Rscript predict_watershed.R --training_input $input_file --prediction_input $input_file --number_dimensions $number_of_dimensions --output_prefix $output_prefix --model_name $model
 
-
-if false; then
+# Run using RIVER
 model="RIVER"  # Can take on "Watershed_exact", "Watershed_approximate", "RIVER"
-number_of_dimensions="1" # Can take on any real number greater than or equal to one
-input_file="example_data/river_example_data_pheno_1.txt" # Input file
-pseudocount="10"
-lambda="0.01" # Can take on a number or 'NA' to do a grid search
-n2_pair_pvalue_fraction=".1"
-binary_pvalue_thresh=".1"
-output_prefix="model_"$model"_number_of_dimensions_"$number_of_dimensions"_lambda_"$lambda"_pheno_1"
-Rscript evaluate_watershed.R --input $input_file --number_dimensions $number_of_dimensions --output_prefix $output_prefix --model_name $model --dirichlet_prior_parameter $pseudocount --l2_prior_parameter $lambda --n2_pair_pvalue_fraction $n2_pair_pvalue_fraction --binary_pvalue_threshold $binary_pvalue_thresh
+number_of_dimensions="3" # Can take on any real number greater than or equal to one
+input_file="example_data/watershed_example_data.txt" # Input file
+output_prefix="model_"$model"_number_of_dimensions_"$number_of_dimensions
+Rscript predict_watershed.R --training_input $input_file --prediction_input $input_file --number_dimensions $number_of_dimensions --output_prefix $output_prefix --model_name $model
 
-
-
-model="RIVER"  # Can take on "Watershed_exact", "Watershed_approximate", "RIVER"
-number_of_dimensions="1" # Can take on any real number greater than or equal to one
-input_file="example_data/river_example_data_pheno_2.txt" # Input file
-pseudocount="10"
-lambda="0.01" # Can take on a number or 'NA' to do a grid search
-n2_pair_pvalue_fraction=".1"
-binary_pvalue_thresh=".1"
-output_prefix="model_"$model"_number_of_dimensions_"$number_of_dimensions"_lambda_"$lambda"_pheno_2"
-Rscript evaluate_watershed.R --input $input_file --number_dimensions $number_of_dimensions --output_prefix $output_prefix --model_name $model --dirichlet_prior_parameter $pseudocount --l2_prior_parameter $lambda --n2_pair_pvalue_fraction $n2_pair_pvalue_fraction --binary_pvalue_threshold $binary_pvalue_thresh
-
-
-model="RIVER"  # Can take on "Watershed_exact", "Watershed_approximate", "RIVER"
-number_of_dimensions="1" # Can take on any real number greater than or equal to one
-input_file="example_data/river_example_data_pheno_3.txt" # Input file
-pseudocount="10"
-lambda="0.01" # Can take on a number or 'NA' to do a grid search
-n2_pair_pvalue_fraction=".1"
-binary_pvalue_thresh=".1"
-output_prefix="model_"$model"_number_of_dimensions_"$number_of_dimensions"_lambda_"$lambda"_pheno_3"
-Rscript evaluate_watershed.R --input $input_file --number_dimensions $number_of_dimensions --output_prefix $output_prefix --model_name $model --dirichlet_prior_parameter $pseudocount --l2_prior_parameter $lambda --n2_pair_pvalue_fraction $n2_pair_pvalue_fraction --binary_pvalue_threshold $binary_pvalue_thresh
-fi
