@@ -158,7 +158,7 @@ logistic_regression_genomic_annotation_model_cv <- function(feat_train, binary_o
     				# Optimize logistic gregression using LBFGS
     				lbfgs_output <- lbfgs(compute_logistic_regression_likelihood, compute_logistic_regression_gradient, gradient_variable_vec, y=observed_training_outliers, feat=observed_training_feat, lambda=lambda, invisible=1)
     			 
-    				if (lbfgs_output$convergence != 0) {
+    				if (lbfgs_output$convergence != 0 & lbfgs_output$convergence != 2) {
     					print("ERRROR in logistic regression optimization!")
     					print(lbfgs_output$convergence)
     				}
@@ -209,7 +209,7 @@ logistic_regression_genomic_annotation_model_cv <- function(feat_train, binary_o
   		# Run Logistic regression
   		lbfgs_output <- lbfgs(compute_logistic_regression_likelihood, compute_logistic_regression_gradient, gradient_variable_vec, y=observed_training_outliers, feat=observed_training_feat, lambda=best_lambda, invisible=1)
 
-  		if (lbfgs_output$convergence != 0) {
+  		if (lbfgs_output$convergence != 0 & lbfgs_output$convergence != 2) {
     		print("ERRROR!")
     		print(lbfgs_output$convergence)
     	}
@@ -470,7 +470,7 @@ map_crf <- function(feat, discrete_outliers, model_params) {
 	}
 
 	# Check to make sure LBFGS converged OK
-	if (lbfgs_output$convergence != 0) {
+	if (lbfgs_output$convergence != 0 & lbfgs_output$convergence != 2) {
 		print(paste0("LBFGS optimazation on CRF did not converge. It reported convergence error of: ", lbfgs_output$convergence))
 		print(lbfgs_output$message)
 	}
