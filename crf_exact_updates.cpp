@@ -187,7 +187,7 @@ double exact_marginal_pairwise_probability(double normalization_constant, int di
 	return marginal_prob;
 }
 
-// Compute both marginal Posterior probability latent variable as well as marginal pairwise probabilities for Conditional random field
+// Compute both marginal Posterior probability as well as marginal pairwise probabilities for Conditional random field using exact inference
 // If posterior_bool==true, compute P(Z|E,G)
 // If posterior_bool==false, compute P(Z|G)
 // [[Rcpp::export]]
