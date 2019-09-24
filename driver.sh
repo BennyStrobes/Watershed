@@ -5,7 +5,7 @@
 # Run 'evaluate_watershed.R'
 #######################
 # Run using RIVER
-model="RIVER"  # Can take on "Watershed_exact", "Watershed_approximate", "RIVER"
+model="Watershed_exact"  # Can take on "Watershed_exact", "Watershed_approximate", "RIVER"
 number_of_dimensions="3" # Can take on any real number greater than or equal to one
 input_file="example_data/watershed_example_data.txt" # Input file
 output_prefix="model_"$model"_number_of_dimensions_"$number_of_dimensions
