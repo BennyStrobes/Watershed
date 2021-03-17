@@ -287,6 +287,23 @@ update_marginal_posterior_probabilities <- function(feat, discrete_outliers, mod
 	return(posterior_list)
 }
 
+# E-Step: Infer P(Z | G, theta)
+update_conditional_z_given_g_probabilities <- function(feat, discrete_outliers, model_params) {
+	# Done seperately depending on model
+	if (model_params$model_name == "RIVER") {
+		# Compute Expectation in CPP file ("independent_crf_exact_updates.cpp")
+		posterior_list <- update_independent_marginal_probabilities_exact_inference_cpp(feat, discrete_outliers, model_params$theta_singleton, model_params$theta_pair, model_params$theta, model_params$phi$inlier_component, model_params$phi$outlier_component, model_params$number_of_dimensions, get_number_of_edge_pairs(model_params$number_of_dimensions), FALSE)
+	} else if (model_params$model_name == "Watershed_exact") {
+		# Compute Expectation in CPP file ("independent_crf_exact_updates.cpp")
+		posterior_list <- update_marginal_probabilities_exact_inference_cpp(feat, discrete_outliers, model_params$theta_singleton, model_params$theta_pair, model_params$theta, model_params$phi$inlier_component, model_params$phi$outlier_component, model_params$number_of_dimensions, choose(model_params$number_of_dimensions, 2), FALSE)
+	} else if (model_params$model_name == "Watershed_approximate") {
+		# Compute Expectation in CPP file ("crf_variational_updates.cpp")
+		posterior_list <- update_marginal_probabilities_vi_cpp(feat, discrete_outliers, model_params$theta_singleton, model_params$theta_pair, model_params$theta, model_params$phi$inlier_component, model_params$phi$outlier_component, model_params$number_of_dimensions, choose(model_params$number_of_dimensions, 2), model_params$vi_step_size, model_params$vi_thresh, model_params$posterior, FALSE)
+	}
+	return(posterior_list)
+}
+
+
 # Extract gradient variable vector
 # First model_params$number_of_dimensions terms are intercepts for each dimension
 # Next there are model_params$number_of_dimensions chunks of length $number_of_genomic_features (each chunk is that dimension's beta)
@@ -580,6 +597,14 @@ train_watershed_model <- function(feat, discrete_outliers, phi_init, theta_pair_
 		# Extract marginal posteriors and pairwise posteriors, respectively
 		model_params$posterior = expected_posteriors$probability
 		model_params$posterior_pairwise = expected_posteriors$probability_pairwise
+
+		##########################
+		# E-Step: Infer P(Z | G, theta)
+		##########################
+		expected_conditional_probability <- update_conditional_z_given_g_probabilities(feat, discrete_outliers, model_params)
+		# Extract marginal posteriors and pairwise posteriors, respectively
+		model_params$mu = expected_conditional_probability$probability
+		model_params$mu_pairwise = expected_conditional_probability$probability_pairwise
 
 		##########################
 		# M-Step: Update Theta and Phi given most recent expectations from E-step 

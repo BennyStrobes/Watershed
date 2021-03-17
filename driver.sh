@@ -21,7 +21,6 @@ Rscript evaluate_watershed.R --input $input_file --number_dimensions $number_of_
 
 
 
-
 #######################
 # Run 'predict_watershed.R'
 # Note for convenience, the training file is the same as the prediction file. This does not necessarily have to be the case
