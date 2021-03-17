@@ -37,7 +37,7 @@ where:
 5. *dirichlet_prior* is a float that controls the strength of the symmetric Dirichlet prior placed on the categorical distribution P(E|Z). We recommend using a value of 10.0.
 6. *l2_prior* is a float defining the L2 (gaussian) distribution that acts as a prior on the parameters defining the conditional random field P(Z|G). If set to NA, Watershed will run a grid search on held-out data to select an optimal L2 prior. We recommend setting this parameter to NA.
 7. *pvalue_threshold* is a float that determines the threshold used to binarizee outliers for the Genomic Annotation model. We recommend setting this parameter to .01.
-8. *pvalue_fraction* is float to determine the fraction of genes (based on rank) that are considered outliers for N2 pair analysis. This is done so each outlier signal/type has approximately the same distribution of positive outlier instances.
+8. *pvalue_fraction* is float to determine the fraction of genes (based on rank) that are considered outliers for N2 pair analysis. This is done so each outlier signal/type has approximately the same distribution of positive outlier instances. We recommend setting this parameter to .01.
 
 "Watershed_exact" is Watershed where parameters are optimized via exact inference (tractable and recommended when the number of dimensions (E) is small. A general rule of thumb is if the number of dimensions (E) is less than equal to 4, exact inference should be used). 
 "Watershed_approximate" is Watershed where parameters are optimized using approximate inference. This approach is tractable when the number of dimensions (E) is large. For example, we used this to model the related outlier signals from 49 tissues (see bioRxiv preprint).
