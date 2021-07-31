@@ -1,6 +1,10 @@
 library(optparse)
 library(PRROC)
-source("watershed.R")
+initial.options <- commandArgs(trailingOnly = FALSE)
+file.arg.name <- "--file="
+script.name <- sub(file.arg.name, "", initial.options[grep(file.arg.name, initial.options)])
+script.basename <- dirname(script.name)
+source(file.path(script.basename,"watershed.R"),chdir = TRUE)
 
 # Helper function to remove NAs from vector
 remove_na <- function(x) {
