@@ -1,0 +1,16 @@
+Type: Package
+Package: Watershed
+Title: Prioritization of functional rare genetic variants by integrating
+    genomic annotations and RNA-seq
+Version: 1.0.0
+Authors@R: c(
+    person("Ben", "Strober", , "bstrober3@gmail.com", role = "aut"),
+    person("Nicole", "Gay", , "nicole.r.gay@gmail.com", role = "ctb")
+  )
+License: MIT
+URL: https://github.com/nicolerg/Watershed, https://github.com/BennyStrobes/Watershed
+Encoding: UTF-8
+Imports: 
+    lbfgs,
+    PRROC,
+    Rcpp

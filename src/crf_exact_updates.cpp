@@ -32,9 +32,12 @@ NumericMatrix extract_all_binary_combinations(int n) {
 }
 
 // Create matrix of dimension 2^(number_of_dimensions-1) X number_of_dimensions
-// Each row of this matrix summarizes all possible binary values that CRF can take on assuming the values of in column column_to_ignore are fixed to be 1
+// Each row of this matrix summarizes all possible binary values that CRF can take 
+// on assuming the values of in column column_to_ignore are fixed to be 1
+// [[Rcpp::export]]
 NumericMatrix extract_all_binary_combinations_ignoring_one_row(int n, int column_to_ignore) {
-	// Ignoring column_to_ignore, get matrix of dimension 2^(number_of_dimensions-1) X (number_of_dimensions -1) that representing all possible values CRF can take on for remaining dimensions
+	// Ignoring column_to_ignore, get matrix of dimension 2^(number_of_dimensions-1) X (number_of_dimensions -1) 
+	// that representing all possible values CRF can take on for remaining dimensions
 	NumericMatrix all_binary_combinations_matrix = extract_all_binary_combinations(n-1);
 
 	// Initialize output matrix
@@ -59,7 +62,9 @@ NumericMatrix extract_all_binary_combinations_ignoring_one_row(int n, int column
 }
 
 // Create matrix of dimension 2^(number_of_dimensions-2) X number_of_dimensions
-// Each row of this matrix summarizes all possible binary values that CRF can take on assuming the values of column_to_ignore1 and column_to_ignore2 are fixed to be 1
+// Each row of this matrix summarizes all possible binary values that CRF can take 
+// on assuming the values of column_to_ignore1 and column_to_ignore2 are fixed to be 1
+// [[Rcpp::export]]
 NumericMatrix extract_all_binary_combinations_ignoring_two_row(int n, int column_to_ignore1, int column_to_ignore2) {
 	// Special case (handeled seperately) for when there are only two dimensions
 	if (n == 2) {
@@ -94,6 +99,7 @@ NumericMatrix extract_all_binary_combinations_ignoring_two_row(int n, int column
 }
 
 // For a CRF value (particular row in all_binary_combinations_matrix), compute the relative CRF weight
+// [[Rcpp::export]]
 double un_normalized_crf_weight(NumericMatrix all_binary_combinations_matrix, int combination_number, NumericMatrix feat, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int sample_num, bool posterior_bool) {
 	// Initialize weight
 	double weight = 0;
@@ -128,6 +134,7 @@ double un_normalized_crf_weight(NumericMatrix all_binary_combinations_matrix, in
 }
 
 // Compute CRF normalization constant for a specifc sample
+// [[Rcpp::export]]
 double exact_normalization_constant(NumericMatrix feat, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int sample_num, bool posterior_bool) {
 	// Extract matrix summarizing all possible values the CRF can take on
 	// Create matrix of dimension 2^(number_of_dimensions) X number_of_dimensions
@@ -146,6 +153,7 @@ double exact_normalization_constant(NumericMatrix feat, NumericMatrix discrete_o
 
 // Compute probability of a CRF label (Z*) 
 // ie compute P(Z=Z*)
+// [[Rcpp::export]]
 double exact_probability(double normalization_constant, NumericMatrix feat, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int sample_num, int combination_number,NumericMatrix all_binary_combinations_ignoring_one_row, bool posterior_bool) {
 	double prob = exp(un_normalized_crf_weight(all_binary_combinations_ignoring_one_row, combination_number, feat, discrete_outliers, theta_singleton, theta_pair, theta, phi_inlier, phi_outlier, number_of_dimensions, sample_num, posterior_bool) - normalization_constant);
 	return prob;
@@ -155,6 +163,7 @@ double exact_probability(double normalization_constant, NumericMatrix feat, Nume
 // Compute P(Z_dimension=1|G) if posterior_bool==false
 // Compute P(Z_dimension=1|G,E) if posterior_bool==true
 // Involves marginalizing out all other dimensions
+// [[Rcpp::export]]
 double exact_marginal_probability(double normalization_constant, NumericMatrix feat, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int sample_num, int dimension, bool posterior_bool) {
 	// Create matrix of dimension 2^(number_of_dimensions-1) X number_of_dimensions
 	// Each row of this matrix summarizes all possible binary values that CRF can take on assuming the values of in column column_to_ignore are fixed to be 1
@@ -173,6 +182,7 @@ double exact_marginal_probability(double normalization_constant, NumericMatrix f
 // Compute P(Z_dimension1=1, Z_dimension2=1| G) if posterior_bool==false
 // Compute P(Z_dimension1=1, Z_dimension2=1| G,E) if posterior_bool==true
 // Involves marginalizing out all other dimensions
+// [[Rcpp::export]]
 double exact_marginal_pairwise_probability(double normalization_constant, int dimension1, int dimension2, int dimension_counter, NumericMatrix feat, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int sample_num, bool posterior_bool) {
 	// Initialize marginal probability variable
 	double marginal_prob = 0;

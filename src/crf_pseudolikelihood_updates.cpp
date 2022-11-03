@@ -9,6 +9,7 @@
 using namespace Rcpp;
 
 // Calculate the un-normalized pseudolikelihood weight for this value
+// [[Rcpp::export]]
 double un_normalized_pseudolikelihood_crf_weight(int dimension, int combination_number, NumericMatrix feat, NumericMatrix posterior, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int sample_num, bool posterior_bool) {
 	// Initialize weight
 	double weight = 0;
@@ -45,6 +46,7 @@ double un_normalized_pseudolikelihood_crf_weight(int dimension, int combination_
 }
 
 // Extract normalization constant for this (sample, dimension) pair
+// [[Rcpp::export]]
 double exact_pseudolikelihood_normalization_constant(NumericMatrix feat, NumericMatrix discrete_outliers, NumericMatrix posterior, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int sample_num, int dimension, bool posterior_bool) {
 	// Initialize normalization constant
 	double val = 0;
@@ -60,6 +62,7 @@ double exact_pseudolikelihood_normalization_constant(NumericMatrix feat, Numeric
 // Compute probabilitiy P(Z_dimension=1) for the current sample according to the pseudolikelihood
 // If posterior_bool == true, compute P(Z_dimension = 1 | G,E)
 // If posterior_bool == false, compute P(Z_dimension = 1 | G)
+// [[Rcpp::export]]
 double exact_pseudolikelihood_marginal_probability(double normalization_constant, NumericMatrix feat, NumericMatrix discrete_outliers, NumericMatrix posterior, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int sample_num, int dimension, bool posterior_bool) {	
 	int combination_number = 1;
 	double marginal_prob = exp(un_normalized_pseudolikelihood_crf_weight(dimension, combination_number, feat, posterior, discrete_outliers, theta_singleton, theta_pair, theta, phi_inlier, phi_outlier, number_of_dimensions, sample_num, posterior_bool) - normalization_constant);
@@ -169,6 +172,3 @@ double compute_pseudolikelihood_crf_likelihood_exact_inference_cpp(NumericMatrix
 	}
 	return log_likelihood;
 }
-
-
-

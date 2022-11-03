@@ -8,7 +8,8 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-// For a logistic regression outcome (combination number), compute the relative logistic regressin weight
+// For a logistic regression outcome (combination number), compute the relative logistic regression weight
+// [[Rcpp::export]]
 double un_normalized_independent_crf_weight(int dimension, int combination_number, NumericMatrix feat, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int sample_num, bool posterior_bool) {
 	// Initialize weight
 	double weight = 0;
@@ -33,6 +34,7 @@ double un_normalized_independent_crf_weight(int dimension, int combination_numbe
 }
 
 // Compute logistic normalization constant
+// [[Rcpp::export]]
 double exact_independent_normalization_constant(NumericMatrix feat, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int sample_num, int dimension, bool posterior_bool) {
 	// Initialize variable to keep track of the normalization constant
 	double val = 0;
@@ -47,6 +49,7 @@ double exact_independent_normalization_constant(NumericMatrix feat, NumericMatri
 
 
 // Compute logistic regression probability for a specific (sample, dimension) pair
+// [[Rcpp::export]]
 double exact_independent_marginal_probability(double normalization_constant, NumericMatrix feat, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int sample_num, int dimension, bool posterior_bool) {
 	// Predict P(Z=1)
 	int combination_number = 1;
@@ -133,6 +136,7 @@ double compute_independent_crf_likelihood_exact_inference_cpp(NumericMatrix post
 }
 
 // Calculate logistic regression normalization constant
+// [[Rcpp::export]]
 double logistic_regression_normalization_constant(NumericMatrix feat, double intercept, NumericVector theta, int sample_num) {
 	// Initialize variable to keep track of normalization constant
 	double val = 0;
