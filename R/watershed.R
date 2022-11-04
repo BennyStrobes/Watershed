@@ -33,7 +33,7 @@ get_discretized_outliers <- function(outlier_pvalues) {
 #' Load in and parse Watershed input file
 #' 
 #' @param input_file String corresponding to the file name of the Watershed input file.
-#'   Either a file path or a URL. See details for required format. 
+#'   Either a file path or a URL. 
 #' @param number_of_dimensions Integer representing the number of outlier types. 
 #'   Sometimes referred to as \code{E} in our documentation.  
 #' @param pvalue_fraction Float. Fraction of outliers (based on rank) that are 
@@ -41,28 +41,28 @@ get_discretized_outliers <- function(outlier_pvalues) {
 #'   has approximately the same distribution of positive outlier examples).
 #' @param pvalue_threshold Float. Absolute p-value threshold used to create 
 #'   binary outliers used for Genomic Annotation Model.
-#'
-#' @importFrom RCurl getURL
 #' 
+#' @return A named list
 #' @export 
 #' 
 #' @examples
-#' data <- load_watershed_data("https://raw.githubusercontent.com/BennyStrobes/Watershed/master/example_data/watershed_example_data.txt",
-#'                             3, 0.1, 0.1)
+#' input = paste0("https://raw.githubusercontent.com/BennyStrobes/Watershed/",
+#'      "master/example_data/watershed_example_data.txt")
+#' data <- load_watershed_data(input, 3, 0.1, 0.1)
 #' 
 load_watershed_data <- function(input_file, number_of_dimensions, pvalue_fraction, pvalue_threshold) {
   # check if it's a URL or a file 
   if(file.exists(input_file)){
     raw_data <- read.table(input_file, header=TRUE)
   }else if(grepl("://",input_file)){
-    # example: https://raw.githubusercontent.com/BennyStrobes/Watershed/master/example_data/watershed_example_data.txt
     x <- RCurl::getURL(input_file)
     raw_data <- read.table(text = x, header=TRUE)
   }else{
     stop(sprintf("Input file %s cannot be found locally and is not a full URL, e.g., beginning with 'http://'.", input_file))
   }
   
-	# Get genomic features (first 2 columns are line identifiers and last (number_of_dimensions+1) columns are outlier status' and N2 pair
+	# Get genomic features (first 2 columns are line identifiers and last (number_of_dimensions+1) 
+  # columns are outlier status' and N2 pair
 	feat <- raw_data[,3:(ncol(raw_data)-number_of_dimensions-1)]
 	# sample name as SubjectID:GeneName
 	rownames(feat) <- paste(raw_data[,"SubjectID"], ":", raw_data[,"GeneName"],sep="")
@@ -190,18 +190,17 @@ logistic_regression_genomic_annotation_model_cv <- function(feat_train, binary_o
   				observed_testing_outliers <- as.matrix(outliers_test_fold[observed_testing_indices, dimension])
   				observed_testing_feat <- feat_test_fold[observed_testing_indices,]
   			
-  				# Optimize logistic gregression using LBFGS
-  				lbfgs_output <- lbfgs(compute_logistic_regression_likelihood, 
-  				                      compute_logistic_regression_gradient, 
-  				                      gradient_variable_vec, 
-  				                      y=observed_training_outliers, 
-  				                      feat=observed_training_feat, 
-  				                      lambda=lambda, 
-  				                      invisible=1)
+  				# Optimize logistic regression using LBFGS
+  				lbfgs_output <- lbfgs::lbfgs(compute_logistic_regression_likelihood, 
+  				                             compute_logistic_regression_gradient, 
+  				                             gradient_variable_vec, 
+  				                             y=observed_training_outliers, 
+  				                             feat=observed_training_feat, 
+  				                             lambda=lambda, 
+  				                             invisible=1)
   			 
   				if (lbfgs_output$convergence != 0 & lbfgs_output$convergence != 2) {
-  					print("ERRROR in logistic regression optimization!")
-  					print(lbfgs_output$convergence)
+  					warning(sprintf("ERROR in logistic regression optimization!\n %s", lbfgs_output$convergence))
   				}
 
   				# Make predictions on test data using learned Logistic regression model
@@ -214,7 +213,7 @@ logistic_regression_genomic_annotation_model_cv <- function(feat_train, binary_o
   			}
 
   			# Compute Precision recall curve for this fold
-  			pr_obj <- pr.curve(scores.class0=pos, scores.class1=neg,curve=T)
+  			pr_obj <- PRROC::pr.curve(scores.class0=pos, scores.class1=neg,curve=T)
   			# Get area under precision-recall curve
   			auc <- pr_obj$auc.integral
   			aucs <- c(aucs, auc)
@@ -250,17 +249,16 @@ logistic_regression_genomic_annotation_model_cv <- function(feat_train, binary_o
 		observed_training_feat <- feat_train_shuff[observed_training_indices,]
 
 		# Run Logistic regression
-		lbfgs_output <- lbfgs(compute_logistic_regression_likelihood, 
-		                      compute_logistic_regression_gradient, 
-		                      gradient_variable_vec, 
-		                      y=observed_training_outliers, 
-		                      feat=observed_training_feat, 
-		                      lambda=best_lambda, 
-		                      invisible=1)
+		lbfgs_output <- lbfgs::lbfgs(compute_logistic_regression_likelihood, 
+		                             compute_logistic_regression_gradient, 
+		                             gradient_variable_vec, 
+		                             y=observed_training_outliers, 
+		                             feat=observed_training_feat, 
+		                             lambda=best_lambda, 
+		                             invisible=1)
 
 		if (lbfgs_output$convergence != 0 & lbfgs_output$convergence != 2) {
-  		print("ERRROR!")
-  		print(lbfgs_output$convergence)
+		  warning(sprintf("ERROR in logistic regression optimization!\n %s", lbfgs_output$convergence))
   	}
   	# Add optimal GAM parameters to data structure
   	gam_parameters$theta_singleton[dimension] <- lbfgs_output$par[1]
@@ -327,7 +325,7 @@ initialize_model_params <- function(num_samples,
   	vi_step_size =vi_step_size,
   	vi_thresh = vi_thresh,
   	model_name = tolower(model_name))
-   return(model_params)
+  return(model_params)
 }
 
 
@@ -612,7 +610,8 @@ compute_exact_crf_pseudolikelihood_for_lbfgs <- function(x,
 	theta_singleton <- x[1:number_of_dimensions]
 	theta <- matrix(0,num_genomic_features,number_of_dimensions)
 	for (dimension in 1:number_of_dimensions) {
-		theta[,dimension] <- x[(number_of_dimensions + 1 + num_genomic_features*(dimension-1)):(number_of_dimensions + num_genomic_features*(dimension))]
+		theta[,dimension] <- x[(number_of_dimensions + 1 + num_genomic_features*(dimension-1)):
+		                         (number_of_dimensions + num_genomic_features*(dimension))]
 	}
 	theta_pair <- matrix(x[(number_of_dimensions + (number_of_dimensions*num_genomic_features) + 1):length(x)], 
 	                     ncol=choose(number_of_dimensions, 2),byrow=TRUE)
@@ -654,7 +653,8 @@ compute_exact_crf_pseudolikelihood_gradient_for_lbfgs <- function(x,
 	theta_singleton <- x[1:number_of_dimensions]
 	theta <- matrix(0,num_genomic_features,number_of_dimensions)
 	for (dimension in 1:number_of_dimensions) {
-		theta[,dimension] <- x[(number_of_dimensions + 1 + num_genomic_features*(dimension-1)):(number_of_dimensions + num_genomic_features*(dimension))]
+		theta[,dimension] <- x[(number_of_dimensions + 1 + num_genomic_features*(dimension-1)):
+		                         (number_of_dimensions + num_genomic_features*(dimension))]
 	}
 	theta_pair <- matrix(x[(number_of_dimensions + (number_of_dimensions*num_genomic_features) + 1):length(x)], 
 	                     ncol=choose(number_of_dimensions, 2),byrow=TRUE)
@@ -707,7 +707,7 @@ map_crf <- function(feat, discrete_outliers, model_params) {
 
 	# Optimize parameters of model using LBFGS (seperate for each of the models)
 	if (tolower(model_params$model_name) == "river" | tolower(model_params$model_name) == "watershed_exact") {
-		lbfgs_output <- lbfgs(compute_exact_crf_likelihood_for_lbfgs, 
+		lbfgs_output <- lbfgs::lbfgs(compute_exact_crf_likelihood_for_lbfgs, 
 		                      compute_exact_crf_gradient_for_lbfgs, 
 		                      gradient_variable_vec, 
 		                      feat=feat, 
@@ -720,7 +720,7 @@ map_crf <- function(feat, discrete_outliers, model_params) {
 		                      model_name=model_params$model_name, 
 		                      invisible=1)
 	} else if (tolower(model_params$model_name) == "watershed_approximate") {
-		lbfgs_output <- lbfgs(compute_exact_crf_pseudolikelihood_for_lbfgs, 
+		lbfgs_output <- lbfgs::lbfgs(compute_exact_crf_pseudolikelihood_for_lbfgs, 
 		                      compute_exact_crf_pseudolikelihood_gradient_for_lbfgs, 
 		                      gradient_variable_vec, 
 		                      feat=feat, 
@@ -771,8 +771,8 @@ map_phi <- function(discrete_outliers, model_params) {
 
     # Add constant Dirichlet prior to count table
     for (dimension_number in 1:model_params$number_of_dimensions) {
-    	phi_outlier[dimension_number,] = phi_outlier[dimension_number,] + pseudoc
-    	phi_inlier[dimension_number,] = phi_inlier[dimension_number,] + pseudoc
+    	phi_outlier[dimension_number,] = phi_outlier[dimension_number,] + model_params$pseudoc
+    	phi_inlier[dimension_number,] = phi_inlier[dimension_number,] + model_params$pseudoc
     }
     # Normalize
     phi_outlier <- phi_outlier/rowSums(phi_outlier)

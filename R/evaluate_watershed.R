@@ -1,6 +1,7 @@
 #' Evaluate Watershed 
 #' 
-#' Train model on non-N2 pairs and evaluate model on N2-pairs. 
+#' Train model on non-N2 pairs and evaluate model on held-out N2-pairs. 
+#' This allows the user to get an idea of the accuracy of Watershed applied to their data.
 #'
 #' @param input_file String corresponding to the file name of the Watershed input file.
 #'   Either a file path or a URL. See details for required format. 
@@ -61,34 +62,41 @@
 #' }
 #' 
 #' @export
-#' 
-#' @importFrom 
 #'
 #' @examples
 #' \dontrun{
 #' # For all examples, use example data that has 3 E outlier p-value columns, 
 #' # which corresponds to number_of_dimensions = 3
+#' input = paste0("https://raw.githubusercontent.com/BennyStrobes/Watershed/",
+#'      "master/example_data/watershed_example_data.txt")
 #' 
 #' # Run using Watershed approximate inference
-#' evaluate_watershed(input_file = "example_data/watershed_example_data.txt", 
+#' evaluate_watershed(input_file = input,
 #'                    model_name = "Watershed_approximate", 
 #'                    number_of_dimensions = 3,
 #'                    output_prefix = "watershed_approximate_n3")
 #' 
 #' # Run using Watershed exact inference
-#' evaluate_watershed(input_file = "example_data/watershed_example_data.txt", 
+#' evaluate_watershed(input_file = input, 
 #'                    model_name = "Watershed_exact", 
 #'                    number_of_dimensions = 3,
 #'                    output_prefix = "watershed_exact_n3")
 #' 
 #' # Run using RIVER
-#' evaluate_watershed(input_file = "example_data/watershed_example_data.txt", 
+#' evaluate_watershed(input_file = input, 
 #'                    model_name = "RIVER", 
 #'                    number_of_dimensions = 3,
 #'                    output_prefix = "river_n3")
 #' }
 #' 
 #' @details 
+#' "Watershed_exact" is Watershed where parameters are optimized via exact inference 
+#' (tractable and recommended when the number of dimensions (E) is small. 
+#' A general rule of thumb is if the number of dimensions (E) is less than equal to 4, 
+#' exact inference should be used). "Watershed_approximate" is Watershed where parameters 
+#' are optimized using approximate inference. This approach is tractable when the 
+#' number of dimensions (E) is large.
+#' 
 #' Watershed models instances of gene-individual pairs. Therefore each line in the 
 #' Watershed input file must be a gene-individual pair. Each line must include a 
 #' minimum of one genomic annotation describing the rare variants nearby the gene 

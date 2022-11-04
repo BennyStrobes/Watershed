@@ -1,5 +1,7 @@
-^LICENSE\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 driver.sh
 ^example_data$
+.Rhistory
+.RData
+.Ruserdata

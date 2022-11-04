@@ -17,16 +17,15 @@ Description: Watershed is an unsupervised probabilistic framework that
     phenoytpes into one model, where predictions for functional effects in
     one outlier phenotype are informed by observed outlier calls in
     another phenotype.
-License: MIT
+License: MIT + file LICENSE
 URL: https://github.com/nicolerg/Watershed,
     https://github.com/BennyStrobes/Watershed,
     https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7646251/
 Imports: 
-    cpp11,
+    Rcpp (>= 1.0.9),
     lbfgs,
     PRROC,
     RCurl
 Encoding: UTF-8
 RoxygenNote: 7.2.1
-LinkingTo: cpp11
-SystemRequirements: C++11
+LinkingTo: Rcpp
