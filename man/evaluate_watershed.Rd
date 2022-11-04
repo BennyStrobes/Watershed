@@ -114,7 +114,7 @@ it can be represented as "NA". If the gene-individual is in an N2 pair, it can
 be represented as a positive integer that represents the unique identifier for 
 that N2 pair. 
 
-\textbf{Note:} if there are more than two individuals with the same rare 
+\strong{Note:} if there are more than two individuals with the same rare 
 genetic variant, you must randomly select two individuals and ignore all other 
 individuals.
 
@@ -133,7 +133,7 @@ of the Watershed input file are as follows (column ordering is essential):
     If it is not, use "NA". If it is an N2 pair, use a unique positive integer to identify the pair.}
 }
 
-\textbf{Note on outlier p-values:} We can explicitly model outlier calls with sign/direction 
+\strong{Note on outlier p-values:} We can explicitly model outlier calls with sign/direction 
 (ie. total expression outliers are generated from a zscore and can therefor be over-expression 
 or under-expression). To model this, if a particular outlier signal has sign/direction, 
 simply put a negative sign in front of the p-value for instances that are under-expression 

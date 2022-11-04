@@ -1,5 +1,9 @@
 # Watershed
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/nicolerg/WatershedR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/nicolerg/WatershedR/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 ***
 
 **This repository is an R-package implementation of the original command-line scripts
