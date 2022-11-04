@@ -73,6 +73,9 @@ for examples of how to run these functions.
 
 ## Citation 
 If you use this R package, please site our publication:
-```
-N.M. Ferraro, B.J. Strober, J. Einson, N.S. Abell, F. Aguet, A.N. Barbeira, M. Brandt, M. Bucan, S.E. Castel, J.R. Davis, et al., TOPMed Lipids Working Group, GTEx Consortium, Transcriptomic signatures across human tissues identify functional rare genetic variation. Science 369, eaaz5900 (2020).
-```
+
+N.M. Ferraro, B.J. Strober, J. Einson, N.S. Abell, F. Aguet, A.N. Barbeira, M. Brandt, 
+  M. Bucan, S.E. Castel, J.R. Davis, et al., TOPMed Lipids Working Group, GTEx Consortium, 
+  Transcriptomic signatures across human tissues identify functional rare genetic variation. 
+  Science 369, eaaz5900 (2020).
+
