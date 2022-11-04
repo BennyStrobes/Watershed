@@ -11,7 +11,7 @@ Watershed is an unsupervised probabilistic framework that integrates genomic ann
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/nicolerg/Watershed}
+  \item \url{https://github.com/nicolerg/WatershedR}
   \item \url{https://github.com/BennyStrobes/Watershed}
   \item \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7646251/}
 }
