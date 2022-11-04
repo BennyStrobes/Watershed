@@ -43,12 +43,8 @@ get_discretized_outliers <- function(outlier_pvalues) {
 #'   binary outliers used for Genomic Annotation Model.
 #' 
 #' @return A named list
-#' @export 
 #' 
-#' @examples
-#' input = paste0("https://raw.githubusercontent.com/BennyStrobes/Watershed/",
-#'      "master/example_data/watershed_example_data.txt")
-#' data <- load_watershed_data(input, 3, 0.1, 0.1)
+#' @noRd
 #' 
 load_watershed_data <- function(input_file, number_of_dimensions, pvalue_fraction, pvalue_threshold) {
   # check if it's a URL or a file 

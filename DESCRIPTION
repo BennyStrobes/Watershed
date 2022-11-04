@@ -29,3 +29,7 @@ Imports:
 Encoding: UTF-8
 RoxygenNote: 7.2.1
 LinkingTo: Rcpp
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

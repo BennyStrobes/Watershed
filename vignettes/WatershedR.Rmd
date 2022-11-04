@@ -1,0 +1,109 @@
+---
+title: "WatershedR"
+output: 
+  rmarkdown::html_document:
+    toc: true
+    code_folding: show 
+    toc_depth: 4
+vignette: >
+  %\VignetteIndexEntry{WatershedR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+```{r setup, eval = TRUE}
+library(WatershedR)
+```
+
+## Introduction 
+Watershed is an unsupervised probabilistic framework that integrates genomic annotations 
+and RNA-seq outlier calls to identify the probability a rare variant has a functional effect 
+on a particular RNA-seq outlier phenotype (examples of outlier phenotypes can be, but are not 
+limited to total expression, splicing, or ASE). Watershed extends our previous model 
+[RIVER](https://www.nature.com/articles/nature24267)
+(which can also be run via this package) by incorporating information from multiple outlier 
+phenotypes into one model, where predictions for functional effects in one outlier phenotype 
+are informed by observed outlier calls in another phenotype. 
+Please see [our publication in *Science*](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7646251/) for more details.
+
+## Input data
+See `evaluate_watershed()` for details of the input file format. For all the examples
+in this vignette, we will use the sample input data provided here:
+<https://raw.githubusercontent.com/BennyStrobes/Watershed/master/example_data/watershed_example_data.txt>. 
+```{r, eval = TRUE}
+# For all examples, use example data that has 3 E outlier p-value columns,
+# which corresponds to number_of_dimensions = 3
+input = paste0("https://raw.githubusercontent.com/BennyStrobes/Watershed/",
+     "master/example_data/watershed_example_data.txt")
+```
+
+## Functions
+This package provides two user-level functions: `evaluate_watershed()` and `predict_watershed()`. 
+Here we provide examples of how to run each of these functions with the recommended default parameters. 
+
+### Evaluate Watershed
+This function is used to train a Watershed model on non-N2 pairs and evaluate model on held-out N2-pairs. 
+This allows the user to get an idea of the accuracy of Watershed applied to their data.
+
+#### Evaluate Watershed with "Watershed_approximate" method
+```{r}
+res = evaluate_watershed(input_file = input,
+  model_name = "Watershed_approximate",
+  number_of_dimensions = 3,
+  output_prefix = "~/watershed_approximate_n3")
+```
+
+#### Evaluate Watershed with "Watershed_exact" method
+```{r}
+res = evaluate_watershed(input_file = input,
+  model_name = "Watershed_exact",
+  number_of_dimensions = 3,
+  output_prefix = "~/watershed_exact_n3")
+```
+
+#### Evaluate Watershed with "RIVER" method
+```{r}
+res = evaluate_watershed(input_file = input,
+  model_name = "RIVER",
+  number_of_dimensions = 3,
+  output_prefix = "~/river_n3")
+```
+
+### Predict Watershed
+This function trains a Watershed model on training data and predicts Watershed posterior probabilities 
+(using Watershed parameters optimized in training) on all gene-individual in a much larger prediction data set. 
+
+#### Predict Watershed with "Watershed_approximate" method
+```{r}
+predict_watershed(training_input = input,
+  prediction_input = input,
+  model_name = "Watershed_approximate",
+  number_dimensions = 3,
+  output_prefix = "~/watershed_approximate_n3")
+```
+
+#### Predict Watershed with "Watershed_exact" method
+```{r}
+predict_watershed(training_input = input,
+  prediction_input = input,
+  model_name = "Watershed_exact",
+  number_dimensions = 3,
+  output_prefix = "~/watershed_exact_n3")
+```
+
+#### Predict Watershed with "RIVER" method
+```{r}
+predict_watershed(training_input = input,
+  prediction_input = input,
+  model_name = "RIVER",
+  number_dimensions = 3,
+  output_prefix = "~/river_n3")
+```
