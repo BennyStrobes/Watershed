@@ -5,12 +5,28 @@ Title: Prioritization of functional rare genetic variants by integrating
 Version: 1.0.0
 Authors@R: c(
     person("Ben", "Strober", , "bstrober3@gmail.com", role = "aut"),
-    person("Nicole", "Gay", , "nicole.r.gay@gmail.com", role = "ctb")
+    person("Nicole", "Gay", , "nicole.r.gay@gmail.com", role = c("cre","ctb"))
   )
+Description: Watershed is an unsupervised probabilistic framework that
+    integrates genomic annotations and RNA-seq outlier calls to identify
+    the probability a rare variant has a functional effect on a particular
+    RNA-seq outlier phenotype (examples of outlier phenotypes can be, but
+    are not limited to total expression, splicing, or ASE). Watershed
+    extends our previous model RIVER (which can also be run via this
+    package) by incoorperating information from multiple outlier
+    phenoytpes into one model, where predictions for functional effects in
+    one outlier phenotype are informed by observed outlier calls in
+    another phenotype.
 License: MIT
-URL: https://github.com/nicolerg/Watershed, https://github.com/BennyStrobes/Watershed
-Encoding: UTF-8
+URL: https://github.com/nicolerg/Watershed,
+    https://github.com/BennyStrobes/Watershed,
+    https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7646251/
 Imports: 
+    cpp11,
     lbfgs,
     PRROC,
-    Rcpp
+    RCurl
+Encoding: UTF-8
+RoxygenNote: 7.2.1
+LinkingTo: cpp11
+SystemRequirements: C++11

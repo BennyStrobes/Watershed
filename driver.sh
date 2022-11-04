@@ -1,3 +1,6 @@
+## use Rcpp::compileAttributes to handle C++ functions 
+## Notice that the compileAttribute will be called automatically when you build your package using Rstudio or devtools.
+
 # Run using Watershed approximate inference
 model="Watershed_approximate"  # Can take on "Watershed_exact", "Watershed_approximate", "RIVER"
 number_of_dimensions="3" # Can take on any real number greater than or equal to one
