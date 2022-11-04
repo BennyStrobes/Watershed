@@ -5,3 +5,4 @@ driver.R
 .Rhistory
 .RData
 .Ruserdata
+^\.github$

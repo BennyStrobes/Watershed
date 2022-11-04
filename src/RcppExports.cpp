@@ -12,7 +12,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // extract_all_binary_combinations
 NumericMatrix extract_all_binary_combinations(int n);
-RcppExport SEXP _Watershed_extract_all_binary_combinations(SEXP nSEXP) {
+RcppExport SEXP _WatershedR_extract_all_binary_combinations(SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -23,7 +23,7 @@ END_RCPP
 }
 // update_marginal_probabilities_exact_inference_cpp
 List update_marginal_probabilities_exact_inference_cpp(NumericMatrix feat, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int number_of_pairs, bool posterior_bool);
-RcppExport SEXP _Watershed_update_marginal_probabilities_exact_inference_cpp(SEXP featSEXP, SEXP discrete_outliersSEXP, SEXP theta_singletonSEXP, SEXP theta_pairSEXP, SEXP thetaSEXP, SEXP phi_inlierSEXP, SEXP phi_outlierSEXP, SEXP number_of_dimensionsSEXP, SEXP number_of_pairsSEXP, SEXP posterior_boolSEXP) {
+RcppExport SEXP _WatershedR_update_marginal_probabilities_exact_inference_cpp(SEXP featSEXP, SEXP discrete_outliersSEXP, SEXP theta_singletonSEXP, SEXP theta_pairSEXP, SEXP thetaSEXP, SEXP phi_inlierSEXP, SEXP phi_outlierSEXP, SEXP number_of_dimensionsSEXP, SEXP number_of_pairsSEXP, SEXP posterior_boolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -43,7 +43,7 @@ END_RCPP
 }
 // compute_crf_likelihood_exact_inference_cpp
 double compute_crf_likelihood_exact_inference_cpp(NumericMatrix posterior, NumericMatrix posterior_pairwise, NumericMatrix feat, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, double lambda, double lambda_pair, double lambda_singleton);
-RcppExport SEXP _Watershed_compute_crf_likelihood_exact_inference_cpp(SEXP posteriorSEXP, SEXP posterior_pairwiseSEXP, SEXP featSEXP, SEXP discrete_outliersSEXP, SEXP theta_singletonSEXP, SEXP theta_pairSEXP, SEXP thetaSEXP, SEXP phi_inlierSEXP, SEXP phi_outlierSEXP, SEXP number_of_dimensionsSEXP, SEXP lambdaSEXP, SEXP lambda_pairSEXP, SEXP lambda_singletonSEXP) {
+RcppExport SEXP _WatershedR_compute_crf_likelihood_exact_inference_cpp(SEXP posteriorSEXP, SEXP posterior_pairwiseSEXP, SEXP featSEXP, SEXP discrete_outliersSEXP, SEXP theta_singletonSEXP, SEXP theta_pairSEXP, SEXP thetaSEXP, SEXP phi_inlierSEXP, SEXP phi_outlierSEXP, SEXP number_of_dimensionsSEXP, SEXP lambdaSEXP, SEXP lambda_pairSEXP, SEXP lambda_singletonSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -66,7 +66,7 @@ END_RCPP
 }
 // update_pseudolikelihood_marginal_probabilities_exact_inference_cpp
 List update_pseudolikelihood_marginal_probabilities_exact_inference_cpp(NumericMatrix feat, NumericMatrix discrete_outliers, NumericMatrix posterior, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int number_of_pairs, bool posterior_bool);
-RcppExport SEXP _Watershed_update_pseudolikelihood_marginal_probabilities_exact_inference_cpp(SEXP featSEXP, SEXP discrete_outliersSEXP, SEXP posteriorSEXP, SEXP theta_singletonSEXP, SEXP theta_pairSEXP, SEXP thetaSEXP, SEXP phi_inlierSEXP, SEXP phi_outlierSEXP, SEXP number_of_dimensionsSEXP, SEXP number_of_pairsSEXP, SEXP posterior_boolSEXP) {
+RcppExport SEXP _WatershedR_update_pseudolikelihood_marginal_probabilities_exact_inference_cpp(SEXP featSEXP, SEXP discrete_outliersSEXP, SEXP posteriorSEXP, SEXP theta_singletonSEXP, SEXP theta_pairSEXP, SEXP thetaSEXP, SEXP phi_inlierSEXP, SEXP phi_outlierSEXP, SEXP number_of_dimensionsSEXP, SEXP number_of_pairsSEXP, SEXP posterior_boolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -87,7 +87,7 @@ END_RCPP
 }
 // compute_pseudolikelihood_crf_likelihood_exact_inference_cpp
 double compute_pseudolikelihood_crf_likelihood_exact_inference_cpp(NumericMatrix posterior, NumericMatrix posterior_pairwise, NumericMatrix feat, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, double lambda, double lambda_pair, double lambda_singleton);
-RcppExport SEXP _Watershed_compute_pseudolikelihood_crf_likelihood_exact_inference_cpp(SEXP posteriorSEXP, SEXP posterior_pairwiseSEXP, SEXP featSEXP, SEXP discrete_outliersSEXP, SEXP theta_singletonSEXP, SEXP theta_pairSEXP, SEXP thetaSEXP, SEXP phi_inlierSEXP, SEXP phi_outlierSEXP, SEXP number_of_dimensionsSEXP, SEXP lambdaSEXP, SEXP lambda_pairSEXP, SEXP lambda_singletonSEXP) {
+RcppExport SEXP _WatershedR_compute_pseudolikelihood_crf_likelihood_exact_inference_cpp(SEXP posteriorSEXP, SEXP posterior_pairwiseSEXP, SEXP featSEXP, SEXP discrete_outliersSEXP, SEXP theta_singletonSEXP, SEXP theta_pairSEXP, SEXP thetaSEXP, SEXP phi_inlierSEXP, SEXP phi_outlierSEXP, SEXP number_of_dimensionsSEXP, SEXP lambdaSEXP, SEXP lambda_pairSEXP, SEXP lambda_singletonSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -110,7 +110,7 @@ END_RCPP
 }
 // update_marginal_probabilities_vi_cpp
 List update_marginal_probabilities_vi_cpp(NumericMatrix feat, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int number_of_pairs, double step_size, double convergence_thresh, NumericMatrix probability_init, bool posterior_bool);
-RcppExport SEXP _Watershed_update_marginal_probabilities_vi_cpp(SEXP featSEXP, SEXP discrete_outliersSEXP, SEXP theta_singletonSEXP, SEXP theta_pairSEXP, SEXP thetaSEXP, SEXP phi_inlierSEXP, SEXP phi_outlierSEXP, SEXP number_of_dimensionsSEXP, SEXP number_of_pairsSEXP, SEXP step_sizeSEXP, SEXP convergence_threshSEXP, SEXP probability_initSEXP, SEXP posterior_boolSEXP) {
+RcppExport SEXP _WatershedR_update_marginal_probabilities_vi_cpp(SEXP featSEXP, SEXP discrete_outliersSEXP, SEXP theta_singletonSEXP, SEXP theta_pairSEXP, SEXP thetaSEXP, SEXP phi_inlierSEXP, SEXP phi_outlierSEXP, SEXP number_of_dimensionsSEXP, SEXP number_of_pairsSEXP, SEXP step_sizeSEXP, SEXP convergence_threshSEXP, SEXP probability_initSEXP, SEXP posterior_boolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -133,7 +133,7 @@ END_RCPP
 }
 // update_independent_marginal_probabilities_exact_inference_cpp
 List update_independent_marginal_probabilities_exact_inference_cpp(NumericMatrix feat, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, int number_of_pairs, bool posterior_bool);
-RcppExport SEXP _Watershed_update_independent_marginal_probabilities_exact_inference_cpp(SEXP featSEXP, SEXP discrete_outliersSEXP, SEXP theta_singletonSEXP, SEXP theta_pairSEXP, SEXP thetaSEXP, SEXP phi_inlierSEXP, SEXP phi_outlierSEXP, SEXP number_of_dimensionsSEXP, SEXP number_of_pairsSEXP, SEXP posterior_boolSEXP) {
+RcppExport SEXP _WatershedR_update_independent_marginal_probabilities_exact_inference_cpp(SEXP featSEXP, SEXP discrete_outliersSEXP, SEXP theta_singletonSEXP, SEXP theta_pairSEXP, SEXP thetaSEXP, SEXP phi_inlierSEXP, SEXP phi_outlierSEXP, SEXP number_of_dimensionsSEXP, SEXP number_of_pairsSEXP, SEXP posterior_boolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -153,7 +153,7 @@ END_RCPP
 }
 // compute_independent_crf_likelihood_exact_inference_cpp
 double compute_independent_crf_likelihood_exact_inference_cpp(NumericMatrix posterior, NumericMatrix posterior_pairwise, NumericMatrix feat, NumericMatrix discrete_outliers, NumericVector theta_singleton, NumericMatrix theta_pair, NumericMatrix theta, NumericMatrix phi_inlier, NumericMatrix phi_outlier, int number_of_dimensions, double lambda, double lambda_pair, double lambda_singleton);
-RcppExport SEXP _Watershed_compute_independent_crf_likelihood_exact_inference_cpp(SEXP posteriorSEXP, SEXP posterior_pairwiseSEXP, SEXP featSEXP, SEXP discrete_outliersSEXP, SEXP theta_singletonSEXP, SEXP theta_pairSEXP, SEXP thetaSEXP, SEXP phi_inlierSEXP, SEXP phi_outlierSEXP, SEXP number_of_dimensionsSEXP, SEXP lambdaSEXP, SEXP lambda_pairSEXP, SEXP lambda_singletonSEXP) {
+RcppExport SEXP _WatershedR_compute_independent_crf_likelihood_exact_inference_cpp(SEXP posteriorSEXP, SEXP posterior_pairwiseSEXP, SEXP featSEXP, SEXP discrete_outliersSEXP, SEXP theta_singletonSEXP, SEXP theta_pairSEXP, SEXP thetaSEXP, SEXP phi_inlierSEXP, SEXP phi_outlierSEXP, SEXP number_of_dimensionsSEXP, SEXP lambdaSEXP, SEXP lambda_pairSEXP, SEXP lambda_singletonSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -176,7 +176,7 @@ END_RCPP
 }
 // compute_logistic_regression_likelihood_exact_inference_cpp
 double compute_logistic_regression_likelihood_exact_inference_cpp(NumericMatrix posterior, NumericMatrix feat, double intercept, NumericVector theta, double lambda);
-RcppExport SEXP _Watershed_compute_logistic_regression_likelihood_exact_inference_cpp(SEXP posteriorSEXP, SEXP featSEXP, SEXP interceptSEXP, SEXP thetaSEXP, SEXP lambdaSEXP) {
+RcppExport SEXP _WatershedR_compute_logistic_regression_likelihood_exact_inference_cpp(SEXP posteriorSEXP, SEXP featSEXP, SEXP interceptSEXP, SEXP thetaSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -191,7 +191,7 @@ END_RCPP
 }
 // logistic_regression_predictions
 NumericMatrix logistic_regression_predictions(NumericMatrix feat, double intercept, NumericVector theta);
-RcppExport SEXP _Watershed_logistic_regression_predictions(SEXP featSEXP, SEXP interceptSEXP, SEXP thetaSEXP) {
+RcppExport SEXP _WatershedR_logistic_regression_predictions(SEXP featSEXP, SEXP interceptSEXP, SEXP thetaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -204,20 +204,20 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_Watershed_extract_all_binary_combinations", (DL_FUNC) &_Watershed_extract_all_binary_combinations, 1},
-    {"_Watershed_update_marginal_probabilities_exact_inference_cpp", (DL_FUNC) &_Watershed_update_marginal_probabilities_exact_inference_cpp, 10},
-    {"_Watershed_compute_crf_likelihood_exact_inference_cpp", (DL_FUNC) &_Watershed_compute_crf_likelihood_exact_inference_cpp, 13},
-    {"_Watershed_update_pseudolikelihood_marginal_probabilities_exact_inference_cpp", (DL_FUNC) &_Watershed_update_pseudolikelihood_marginal_probabilities_exact_inference_cpp, 11},
-    {"_Watershed_compute_pseudolikelihood_crf_likelihood_exact_inference_cpp", (DL_FUNC) &_Watershed_compute_pseudolikelihood_crf_likelihood_exact_inference_cpp, 13},
-    {"_Watershed_update_marginal_probabilities_vi_cpp", (DL_FUNC) &_Watershed_update_marginal_probabilities_vi_cpp, 13},
-    {"_Watershed_update_independent_marginal_probabilities_exact_inference_cpp", (DL_FUNC) &_Watershed_update_independent_marginal_probabilities_exact_inference_cpp, 10},
-    {"_Watershed_compute_independent_crf_likelihood_exact_inference_cpp", (DL_FUNC) &_Watershed_compute_independent_crf_likelihood_exact_inference_cpp, 13},
-    {"_Watershed_compute_logistic_regression_likelihood_exact_inference_cpp", (DL_FUNC) &_Watershed_compute_logistic_regression_likelihood_exact_inference_cpp, 5},
-    {"_Watershed_logistic_regression_predictions", (DL_FUNC) &_Watershed_logistic_regression_predictions, 3},
+    {"_WatershedR_extract_all_binary_combinations", (DL_FUNC) &_WatershedR_extract_all_binary_combinations, 1},
+    {"_WatershedR_update_marginal_probabilities_exact_inference_cpp", (DL_FUNC) &_WatershedR_update_marginal_probabilities_exact_inference_cpp, 10},
+    {"_WatershedR_compute_crf_likelihood_exact_inference_cpp", (DL_FUNC) &_WatershedR_compute_crf_likelihood_exact_inference_cpp, 13},
+    {"_WatershedR_update_pseudolikelihood_marginal_probabilities_exact_inference_cpp", (DL_FUNC) &_WatershedR_update_pseudolikelihood_marginal_probabilities_exact_inference_cpp, 11},
+    {"_WatershedR_compute_pseudolikelihood_crf_likelihood_exact_inference_cpp", (DL_FUNC) &_WatershedR_compute_pseudolikelihood_crf_likelihood_exact_inference_cpp, 13},
+    {"_WatershedR_update_marginal_probabilities_vi_cpp", (DL_FUNC) &_WatershedR_update_marginal_probabilities_vi_cpp, 13},
+    {"_WatershedR_update_independent_marginal_probabilities_exact_inference_cpp", (DL_FUNC) &_WatershedR_update_independent_marginal_probabilities_exact_inference_cpp, 10},
+    {"_WatershedR_compute_independent_crf_likelihood_exact_inference_cpp", (DL_FUNC) &_WatershedR_compute_independent_crf_likelihood_exact_inference_cpp, 13},
+    {"_WatershedR_compute_logistic_regression_likelihood_exact_inference_cpp", (DL_FUNC) &_WatershedR_compute_logistic_regression_likelihood_exact_inference_cpp, 5},
+    {"_WatershedR_logistic_regression_predictions", (DL_FUNC) &_WatershedR_logistic_regression_predictions, 3},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_Watershed(DllInfo *dll) {
+RcppExport void R_init_WatershedR(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

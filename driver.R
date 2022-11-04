@@ -27,7 +27,7 @@ res = evaluate_watershed(input_file = input,
   output_prefix = "river_n3")
 
 # Run using Watershed approximate inference
-res = predict_watershed(training_input = input,
+predict_watershed(training_input = input,
   prediction_input = input,
   model_name = "Watershed_approximate",
   number_dimensions = 3,
