@@ -2,7 +2,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @useDynLib Watershed, .registration = TRUE
+#' @useDynLib WatershedR, .registration = TRUE
 #' @importFrom Rcpp evalCpp
 #' @importFrom stats na.omit sd median
 #' @importFrom PRROC roc.curve pr.curve
