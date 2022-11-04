@@ -2,6 +2,6 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom
+#' @useDynLib Watershed, .registration = TRUE
 ## usethis namespace: end
 NULL
