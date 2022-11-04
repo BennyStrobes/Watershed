@@ -1,108 +1,74 @@
 # Watershed
 
-Watershed is an unsupervised probabilistic framework that integrates genomic annotations and RNA-seq outlier calls to identify the probability a rare variant has a functional effect on a particular RNA-seq outlier phenotype (examples of outlier phenotypes can be, but are not limited to total expression, splicing, or ASE). Watershed extends our previous model RIVER (which can also be run via this package) by incoorperating information from multiple outlier phenoytpes into one model, where predictions for functional effects in one outlier phenotype are informed by observed outlier calls in another phenotype. Please see [ref bioRxiv preprint] for more details.
+***
 
-## Input file
-Watershed models instances of gene-individual pairs. Therefor each line in the Watershed input file must be a gene-individual pair. Each line must include a minimum of one genomic annotation describing the rare variants nearby the gene for that individual. Each line must also include a minimum of one outlier score (p-value) describing the gene-individual pair. To evaluate Watershed performance we rely on N2 pairs, or pairs of individuals that share the same rare genetic variant nearby a particular gene (see bioRxiv preprint for more details). Therefor, each line in the input file must contain a column concerning whether the gene-individual is an N2 pair. If the gene-individual is not an N2 pair, it can be represented as "NA". If the gene-individual is in an N2 pair, it can be represented as a positive integer that represents the unique identifier for that N2 pair. Note: if there are more than two individauls with the same rare genetic variant, you must randomly select two individuals and ignore all other individuals. 
+**This repository is an R-package implementation of the original command-line scripts
+available at the [upstream repository](https://github.com/BennyStrobes/Watershed) 
+to streamline installation and dependency management.**
 
-More formally, assuming G genomic annotations and E outlier p-values, the columns of the Watershed input file are as follows (column ordering is essential):
-1. "SubjectID": Identifier for the individual in the gene-individual pair
-2. "GeneName": Identifier for the gene in the gene-individual pair
-3. A column for each of the G genomic annotations. Header names of these columns can be entirely user specified. Values are real valued.
-4. A column for each of the E outlier p-values. Header names of these columns can be entirely user specified. Values are p-values (ie [0,1]). It is ok to have missing/unobserved values. If an outlier is missing for a gene-individual pair, use "NaN" for that element.
-5. "N2pair": Identifier for whether gene-individual is in an N2 pair. If it is not, use "NA". If it is an N2 pair, use a unique positive integer to identify the pair.
+***
 
-An example input file with 18 genomic annotations and 3 outlier p-values can be found in "example_data/watershed_example_data.txt".
-Another example input file with 18 genomic annotations and 1 outlier p-value can be found in "example_data/river_example_data_pheno_1.txt"
+Watershed is an unsupervised probabilistic framework that integrates genomic annotations 
+and RNA-seq outlier calls to identify the probability a rare variant has a functional effect 
+on a particular RNA-seq outlier phenotype (examples of outlier phenotypes can be, but are not 
+limited to total expression, splicing, or ASE). Watershed extends our previous model 
+[RIVER](https://www.nature.com/articles/nature24267)
+(which can also be run via this package) by incorporating information from multiple outlier 
+phenotypes into one model, where predictions for functional effects in one outlier phenotype 
+are informed by observed outlier calls in another phenotype. 
+Please see [our publication in *Science*](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7646251/) for more details.
 
-Note on outlier p-values: We can explicitely model outlier calls with sign/direction (ie. total expression outliers are generated from a zscore and can therefor be over-expression or under-expression). To model this, if a particular outlier signal has sign/direction, simply put a negative sign in front of the p-value for instances that are under-expression and keep the over-expression outliers as postive valued. An exmample of this can be seen in the "pheno_2_pvalue" column of "example_data/watershed_example_data.txt".
+## Installation
+Install this R package from the GitHub repository:
+```r
+if (!require("devtools", quietly = TRUE)){
+  install.packages("devtools")
+}
+devtools::install_github("nicolerg/WatershedR")
+```
 
+## Input data
+For details about the input file format, see the [docs](https://nicolerg.github.io/WatershedR/reference/evaluate_watershed.html):
+```r
+library(WatershedR)
+?evaluate_watershed
+```
+
+An example input file with 18 genomic annotations and 3 outlier p-values can be found in [example_data/watershed_example_data.txt](example_data/watershed_example_data.txt).
+
+Another example input file with 18 genomic annotations and 1 outlier p-value can be found in [example_data/river_example_data_pheno_1.txt](example_data/river_example_data_pheno_1.txt). 
 
 ## Running Watershed
-There are two main scripts useful to user looking to apply Watershed to their data:
-1. *evaluate_watershed.R*: Briefly, this script will train a Watershed model on non-N2 pairs, and evaluate (via precision recall curves) on held-out N2 pairs. This will allow the user to get an idea of the accuracy of Watershed applied to their data.
-2. *predict_watershed.R*: Briefly, this script allows a user to train a Watershed model on training data, and then predict Watershed posterior probabilities (using Watershed parameters optimized in training) on all gene-individual in a much larger prediction data set.
+This package provides two functions useful to users looking to apply Watershed to their data:
 
+1. **evaluate_watershed():** This function is used to train a Watershed model on non-N2 pairs and 
+evaluate model on held-out N2-pairs. This allows the user to get an idea of the accuracy of 
+Watershed applied to their data.
 
-## Running evaluate_watershed.R
-evaluate_watershed.R can be easily run by using the following command:
+2. **predict_watershed():** This function trains a Watershed model on training data and 
+predicts Watershed posterior probabilities (using Watershed parameters optimized in training) 
+on all gene-individual in a much larger prediction data set.
 
-Rscript evaluate_watershed.R --input *input_file_name* --number_dimensions *number_of_dimensions* --output_prefix *output_prefix* --model_name *model* --dirichlet_prior_parameter *dirichlet_prior* --l2_prior_parameter *l2_prior* --binary_pvalue_threshold *pvalue_threshold* --n2_pair_pvalue_fraction *pvalue_fraction*
+Both of these functions can be run with three different models:
 
-where:
-1. *input_file_name* is a string corresponding to the filename of the Watershed input file
-2. *number_of_dimensions* is an integer representing the number of outlier types (variable E in "input file" section)
-3. *output_prefix* is a string corresponding to the prefix of all output files generated by evaluate_watershed.R
-4. *model* is string identifier corresponding to the model to use. Options are "RIVER", "Watershed_exact", and "Watershed_approximate"
-5. *dirichlet_prior* is a float that controls the strength of the symmetric Dirichlet prior placed on the categorical distribution P(E|Z). We recommend using a value of 10.0.
-6. *l2_prior* is a float defining the L2 (gaussian) distribution that acts as a prior on the parameters defining the conditional random field P(Z|G). If set to NA, Watershed will run a grid search on held-out data to select an optimal L2 prior. We recommend setting this parameter to NA.
-7. *pvalue_threshold* is a float that determines the threshold used to binarizee outliers for the Genomic Annotation model. We recommend setting this parameter to .01.
-8. *pvalue_fraction* is float to determine the fraction of genes (based on rank) that are considered outliers for N2 pair analysis. This is done so each outlier signal/type has approximately the same distribution of positive outlier instances. We recommend setting this parameter to .01.
+* **Watershed_exact:** Watershed where parameters are optimized via exact inference 
+(tractable and recommended when the number of dimensions (`E`) is small. 
+A general rule of thumb is if the number of dimensions (`E`) is less than equal to 4, 
+exact inference should be used). 
 
-"Watershed_exact" is Watershed where parameters are optimized via exact inference (tractable and recommended when the number of dimensions (E) is small. A general rule of thumb is if the number of dimensions (E) is less than equal to 4, exact inference should be used). 
-"Watershed_approximate" is Watershed where parameters are optimized using approximate inference. This approach is tractable when the number of dimensions (E) is large. For example, we used this to model the related outlier signals from 49 tissues (see bioRxiv preprint).
+* **Watershed_approximate:** Watershed where parameters are optimized using approximate inference. 
+This approach is tractable when the number of dimensions (`E`) is large. For example, 
+we used this to model the related outlier signals from 49 tissues (see [our publication](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7646251/)).
 
-There are several other command line arguments (including model hyperparameter settings) that can be specified. A description can be found in "evaluate_watershed.R".
+* **RIVER:** A [previously published method](https://www.nature.com/articles/nature24267). 
+Used if the number of dimensions (`E`) is 1. 
 
-An example shell script that calls 'evaluate_watershed.R' can be found in 'driver.sh'.
+See the [function documentation](https://nicolerg.github.io/WatershedR/reference/index.html) 
+for details about the outputs. See the [Get Started vignette](https://nicolerg.github.io/WatershedR/articles/WatershedR.html) 
+for examples of how to run these functions.
 
-## evaluate_watershed.R deliverables
-
-Running evaluate_watershed.R will save an R object to *output_prefix* + 'evaluation_object.rds'.
-This object can be accesed in R with the following command:
-
-evaluation_object <- readRDS(evaluation_object_file_name)
-
-Once loaded, the object can be accessed via the following:
-
-* evaluation_object$model_params contains all of the optimized Watershed parameters.
-* evaluation_object$gam_model_params contains all optimized GAM parameters
-* evaluation_object$auc contains information on evaluation (precion-recall stats, etc)
-* evaluation_object$auc[[1]]$evaROC$watershed_pr_auc gives the area under the precision recall curve (for Watershed/RIVER) in the first outlier dimension (base 1)
-* evaluation_object$auc[[3]]$evaROC$watershed_pr_auc gives the area under the precision recall curve (for Watershed/RIVER) in the third outlier dimension (base 1)
-* evaluation_object$auc[[1]]$evaROC$GAM_pr_auc gives the area under the precision recall curve (for GAM) in the first outlier dimension (base 1)
-* evaluation_object$auc[[1]]$evaROC$watershed_precision gives a vector of precision values (for Watershed/RIVER) in the first outlier dimension (base 1). The vector spans posterior thresholds generated by the R library "PRROC"
-* evaluation_object$auc[[1]]$evaROC$watershed_recall gives a vector of recall values (for Watershed/RIVER) in the first outlier dimension (base 1). This vector is the same length as precision vector above (and can be therefor used together to make a PR-curve). The vector spans posterior thresholds generated by the R library "PRROC"
-* evaluation_object$auc[[1]]$evaROC$GAM_precision gives a vector of precision values (for GAM) in the first outlier dimension (base 1). The vector spans posterior thresholds generated by the R library "PRROC"
-* evaluation_object$auc[[1]]$evaROC$GAM_recall gives a vector of recall values (for GAM) in the first outlier dimension (base 1). This vector is the same length as precision vector above (and can be therefor used together to make a PR-curve). The vector spans posterior thresholds generated by the R library "PRROC"
-
-## Running predict_watershed.R
-predict_watershed.R can be easily run by using the following command:
-
-Rscript predict_watershed.R --training_input *training_input_file* --prediction_input *prediction_input_file* --number_dimensions *number_of_dimensions* --output_prefix *output_prefix* --model_name *model* --dirichlet_prior_parameter *dirichlet_prior* --l2_prior_parameter *l2_prior* --binary_pvalue_threshold *pvalue_threshold*
-
-where:
-1. *training_input_file* is the filename of the Watershed input file used to train Watershed.
-2. *prediction_input_file* is the filename of the Watershed input file containing instances to make predictions on. It must be the same structure (ie. same genomic annotations and same outlier calls) as the $training_input_file.
-3. *number_of_dimensions* is an integer representing the number of outlier types (variable E in "input file" section)
-4. *output_prefix* is the prefix of all output files generated by evaluate_watershed.R
-5. *model* is string identifier corresponding to the model to use. Options are "RIVER", "Watershed_exact", and "Watershed_approximate"
-6. *dirichlet_prior* is a float that controls the strength of the symmetric Dirichlet prior placed on the categorical distribution P(E|Z). We recommend using a value of 10.0.
-7. *l2_prior* is a float defining the L2 (gaussian) distribution that acts as a prior on the parameters defining the conditional random field P(Z|G). If set to NA, Watershed will run a grid search on held-out data to select an optimal L2 prior. We recommend setting this parameter to NA.
-8. *pvalue_threshold* is a float that determines the threshold used to binarizee outliers for the Genomic Annotation model. We recommend setting this parameter to .01.
-
-
-"Watershed_exact" is Watershed where parameters are optimized via exact inference (tractable and recommended when E is small. A general rule of thumb is if E is less than equal to 4, exact inference should be used). 
-"Watershed_approximate" is Watershed where parameters are optimized using approximate inference. This approach is tractable when E is large. For example, we used this to model the related outlier signals from 49 tissues (see bioRxiv preprint).
-
-There are several other command line arguments (including model hyperparameter settings) that can be specified. A description can be found in "predict_watershed.R".
-
-An example shell script that calls 'predict_watershed.R' can be found in 'driver.sh'.
-
-## predict_watershed.R deliverables
-
-Running predict_watershed.R will save a tab-seperated file to $output_prefix"posterior_probability.txt". Each line of this file corresponds to an instance (a line) in the prediction input file ($prediction_input_file). Each line has the following columns:
-1. "sample_names": Identifier the gene-individual pair corresponding to the given line.
-2. A column for each of the E outliers. Where the column corresponding to outlier e, represents the Watershed marginal posterior probability for outier e.
-
-## Dependencies and Testing environment
-* R 3.5.1
-* R package Rcpp (1.0.2)
-* R package lbfgs (1.2.1)
-* R package PRROC (1.3.1)
-* R package optparse (1.6.4)
-
-
-## Authors
-
-* **Ben Strober** -- [BennyStrobes](https://github.com/BennyStrobes) -- bstrober3@gmail.com
+## Citation 
+If you use this R package, please site our publication:
+```
+N.M. Ferraro, B.J. Strober, J. Einson, N.S. Abell, F. Aguet, A.N. Barbeira, M. Brandt, M. Bucan, S.E. Castel, J.R. Davis, et al., TOPMed Lipids Working Group, GTEx Consortium, Transcriptomic signatures across human tissues identify functional rare genetic variation. Science 369, eaaz5900 (2020).
+```

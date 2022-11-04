@@ -110,7 +110,7 @@
 #' be represented as a positive integer that represents the unique identifier for 
 #' that N2 pair. 
 #' 
-#' Note: if there are more than two individuals with the same rare 
+#' \textbf{Note:} if there are more than two individuals with the same rare 
 #' genetic variant, you must randomly select two individuals and ignore all other 
 #' individuals.
 #' 
@@ -128,6 +128,14 @@
 #'   \item{\code{N2pair}}{Identifier for whether gene-individual is in an N2 pair. 
 #'     If it is not, use "NA". If it is an N2 pair, use a unique positive integer to identify the pair.}
 #' }
+#' 
+#' \textbf{Note on outlier p-values:} We can explicitly model outlier calls with sign/direction 
+#' (ie. total expression outliers are generated from a zscore and can therefor be over-expression 
+#' or under-expression). To model this, if a particular outlier signal has sign/direction, 
+#' simply put a negative sign in front of the p-value for instances that are under-expression 
+#' and keep the over-expression outliers as postive valued. 
+#' An example of this can be seen in the \code{pheno_2_pvalue} column of 
+#' \href{example_data/watershed_example_data.txt}{https://raw.githubusercontent.com/BennyStrobes/Watershed/master/example_data/watershed_example_data.txt}.
 #' 
 evaluate_watershed <- function(input_file, 
                                model_name, 

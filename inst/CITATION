@@ -3,7 +3,7 @@ citHeader("To cite Watershed in publications use:")
 citEntry(
   entry    = "Article",
   title    = "Transcriptomic signatures across human tissues identify functional rare genetic variation",
-  doi      = "doi:10.1126/science.aaz5900"
+  doi      = "doi:10.1126/science.aaz5900",
   author   = "Nicole M. Ferraro, Benjamin J. Strober, Jonah Einson, Nathan S. Abell, 
     Francois Aguet, Alvaro N. Barbeira, Margot Brandt, Maja Bucan, Stephane E. Castel, 
     Joe R. Davis, Emily Greenwald, Gaelen T. Hess, Austin T. Hilliard, Rachel L. Kember, 
@@ -53,7 +53,7 @@ citEntry(
   url      = "https://www.science.org/doi/abs/10.1126/science.aaz5900",
   textVersion = paste(
     "N.M. Ferraro, B.J. Strober, J. Einson, N.S. Abell, F. Aguet, A.N. Barbeira,",
-    "M. Brandt, M. Bucan, S.E. Castel, J.R. Davis, et al., TOPMed Lipids Working Group, GTEx Consortium", 
+    "M. Brandt, M. Bucan, S.E. Castel, J.R. Davis, et al., TOPMed Lipids Working Group, GTEx Consortium,", 
     "Transcriptomic signatures across human tissues identify functional rare genetic variation.",
     "Science 369, eaaz5900 (2020)."
   )
