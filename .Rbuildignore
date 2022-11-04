@@ -1,6 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-driver.R
 ^example_data$
 .Rhistory
 .RData
