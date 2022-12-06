@@ -32,7 +32,7 @@
 #'
 #' @export
 #'
-#' @seealso [evaluate_watershed]
+#' @seealso [evaluate_watershed()]
 #' 
 #' @examples
 #' # Note for convenience, the training file is the same as the prediction file. 
