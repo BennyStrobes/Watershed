@@ -4,9 +4,9 @@
 #' (using Watershed parameters optimized in training) on all gene-individual in a much larger prediction data set. 
 #'
 #' @param training_input String. The Watershed input file containing instances used to train the model.
-#'   Either a file path or a URL. 
+#'   Either a file path or a URL. For required format, see details of [evaluate_watershed()].  
 #' @param prediction_input String. The Watershed input file containing instances to predict on.
-#'   Either a file path or a URL. 
+#'   Either a file path or a URL. For required format, see details of [evaluate_watershed()].  
 #' @param number_dimensions Integer representing the number of outlier types. 
 #'   Sometimes referred to as \code{E} in our documentation.  
 #' @param model_name String identifier corresponding to the model to use. 
